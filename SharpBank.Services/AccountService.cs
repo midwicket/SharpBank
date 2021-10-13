@@ -11,12 +11,10 @@ namespace SharpBank.Services
 {
     public class AccountService
     {
-        private readonly Datastore datastore;
         private readonly BankService bankService;
 
-        public AccountService(Datastore datastore, BankService bankService)
+        public AccountService( BankService bankService)
         {
-            this.datastore = datastore;
             this.bankService = bankService;
         }
 

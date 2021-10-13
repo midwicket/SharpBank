@@ -7,37 +7,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpBank.Models.Enums;
 
 namespace SharpBank.CLI.Controllers
 {
-    static class AccountsController
+    class AccountsController
     {
-        public static Account CreateAccount(string ifsc)
+        private readonly AccountService accountService;
+        private readonly Inputs inputs;
+
+        public AccountsController(AccountService accountService,Inputs inputs)
         {
+            this.accountService = accountService;
+            this.inputs = inputs;
+        }
+        public long CreateAccount(long bankId)
+        {
+            long id = 0;
             try
             {
-                string name = Inputs.GetName();
-                string password = Inputs.GetPassword();
-                string accountNumber = AccountService.GenerateAccountNumber(ifsc);
-                foreach (Account a in AccountService.GetAccounts()) 
-                {
-                    if (a.AccountNumber == accountNumber && a.IFSC == ifsc)
-                    {
-                        throw new AccountNumberException();
-                    }
-                }
-                Account acc = new Account
-                {
-                    UserName = name,
-                    Password = password,
-                    AccountNumber = accountNumber,
-                    IFSC = ifsc,
-                    Balance=0m
-                };
-                AccountService.AddAccount(acc);
-                return acc;
+                string name = inputs.GetName();
+                string password = inputs.GetPassword();
+                Gender gender = inputs.GetGender();
+                
+                id= accountService.AddAccount(name,bankId,gender);
             }
-            catch (AccountNumberException e)
+            catch (AccountIdException e)
             {
 
                 Console.WriteLine("Account Number already exists.");
@@ -46,21 +41,17 @@ namespace SharpBank.CLI.Controllers
             {
                 Console.WriteLine("Internal Error");
             }
-            return null;
+            return id;
         }
-        public static Account GetAccount(string ifsc, string accountNumber)
+        public Account GetAccount(long bankId, long accountId)
         {
 
             try
             {
-                Account acc=AccountService.GetAccount(ifsc, accountNumber);
-                if(acc==null)
-                {
-                    throw new AccountNumberException();
-                }
+                Account acc=accountService.GetAccount(bankId, accountId);
                 return acc;
             }
-            catch (AccountNumberException e)
+            catch (AccountIdException e)
             {
 
                 Console.WriteLine("Account  doesnot  exist.");
@@ -71,17 +62,17 @@ namespace SharpBank.CLI.Controllers
             }
             return null;
         }
-        public static decimal GetBalance(Account acc)
+        public decimal GetBalance(Account acc)
         {
             try
             {
                 if (acc == null)
                 {
-                    throw new AccountNumberException();
+                    throw new AccountIdException();
                 }
                 return acc.Balance;
             }
-            catch (AccountNumberException e)
+            catch (AccountIdException e)
             {
 
                 Console.WriteLine("Account  doesnot  exist.");
@@ -91,6 +82,20 @@ namespace SharpBank.CLI.Controllers
                 Console.WriteLine("Internal Error");
             }
             return -1m;
+        }
+        public List<Transaction> GetTransactionHistory(long bankId, long accountId)
+        {
+            List<Transaction> transactions = new List<Transaction>();
+            try
+            {
+                transactions = accountService.GetAccount(bankId, accountId).Transactions.ToList();
+                return transactions;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Internal Error");
+            }
+            return null;
         }
     }
 }

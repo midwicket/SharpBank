@@ -1,29 +1,37 @@
-﻿using System;
+﻿using SharpBank.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SharpBank.CLI
 {
-    public static class Inputs
+    public   class Inputs
     {
-        public static string GetAccountNumber()
+        public long GetAccountId()
         {
-            Console.WriteLine("Please Enter Your Account Number :");
-            return Console.ReadLine();
+            Console.WriteLine("Please Enter Your ID :");
+            return Convert.ToInt64(Console.ReadLine());
         }
-        public static string GetPassword()
+        public string GetPassword()
         {
             Console.WriteLine("Please Enter Your Password :");
             return Console.ReadLine();
         }
-        public static string GetName()
+        public   string GetName()
         {
-            Console.WriteLine("Please Enter Your Name :");
+            Console.WriteLine("Please Enter The Name :");
             return Console.ReadLine();
         }
-        public static int GetSelection()
+        public   Gender GetGender()
+        {
+            Console.WriteLine("Please Enter Your Gender (Male/Female/Other) :");
+            Enum.TryParse(Console.ReadLine(),out Gender gender);
+            return gender;
+        }
+        public   int GetSelection()
         {
             try
             {
@@ -38,18 +46,18 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public static decimal GetAmount()
+        public   decimal GetAmount()
         {
             Console.WriteLine("Please Enter The Amount :");
             return Convert.ToDecimal(Console.ReadLine());
         }
-        public static List<string> GetRecipient()
+        public   List<long> GetRecipient()
         {
-            List<string> res = new List<string>();
-            Console.WriteLine("Please Enter Recipient IFSC");
-            res.Add(Console.ReadLine());
+            List<long> res = new List<long>();
+            Console.WriteLine("Please Enter Recipient BankId");
+            res.Add(Convert.ToInt64(Console.ReadLine()));
             Console.WriteLine("Please Enter Recipient Account number");
-            res.Add(Console.ReadLine());
+            res.Add(Convert.ToInt64(Console.ReadLine()));
             return res;
         }
     }

@@ -11,81 +11,54 @@ using SharpBank.Models.Exceptions;
 
 namespace SharpBank.CLI.Controllers
 {
-    static class BanksController
+     class BanksController
     {
-        // public Bank CreateBank()
-        //{
-        //    try
-        //    {
-        //        string name = Inputs.GetName();
-        //        string password = Inputs.GetPassword();
-        //        string accountNumber = BankServices.GenerateIFSC(ifsc);
-        //        foreach (Bank a in BankServices.GetBanks()) 
-        //        {
-        //            if (a.IFSC == accountNumber && a.IFSC == ifsc)
-        //            {
-        //                throw new IFSCException();
-        //            }
-        //        }
-        //        Bank acc = new Bank
-        //        {
-        //            UserName = name,
-        //            Password = password,
-        //            IFSC = accountNumber,
-        //            IFSC = ifsc,
-        //            Balance=0m
-        //        };
-        //        BankServices.AddBank(acc);
-        //        return acc;
-        //    }
-        //    catch (IFSCException e)
-        //    {
+        private readonly BankService bankService;
+        private readonly Inputs inputs;
 
-        //        Console.WriteLine("Bank Number already exists.");
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        Console.WriteLine("Internal Error");
-        //    }
-        //    return null;
-        //}
-        public static List<Bank> GetBanks()
+        public BanksController(BankService bankService,Inputs inputs)
         {
+            this.bankService = bankService;
+            this.inputs = inputs;
+        }
+
+        public long CreateBank() {
+            long id=0;
             try
             {
-                List<Bank> banks = BankService.GetBanks();
-                if (banks == null)
-                {
-                    throw new Exception("Internal error");
-                }
-                return banks;
+                string name = inputs.GetName();
+                id =bankService.AddBank(name);
+           
+            }
+            catch (BankIdException e)
+            {
+
+                Console.WriteLine("Bank already exists.");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine("Internal Error");
             }
+            return id;
 
-            return null;
+
         }
-
-
-
-        public static Bank GetBank(string ifsc)
+        public Bank GetBank(long bankId)
         {
 
             try
             {
-                Bank b=BankService.GetBank(ifsc);
+                Bank b=bankService.GetBank(bankId);
                 if(b==null)
                 {
-                    throw new IFSCException();
+                    throw new BankIdException();
                 }
                 return b;
             }
-            catch (IFSCException e)
+            catch (BankIdException e)
             {
 
-                Console.WriteLine("Bank  doesnot  exist.");
+                Console.WriteLine("Bank does not exist.");
             }
             catch (Exception e)
             {

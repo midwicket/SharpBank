@@ -10,12 +10,10 @@ namespace SharpBank.Services
 {
     public class TransactionService
     {
-        private readonly Datastore datastore;
         private readonly AccountService accountService;
 
-        public TransactionService(Datastore datastore, AccountService accountService)
+        public TransactionService(AccountService accountService)
         {
-            this.datastore = datastore;
             this.accountService = accountService;
         }
         public long GenerateId(long sourceBankId, long sourceAccountId, long destinationBankId,long destinationAccountId)
