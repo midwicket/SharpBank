@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpBank.Models.Exceptions
+namespace SharpBank.CLI.Enums
 {
-    public class BankIdException:Exception
+    public enum LoginOptions
     {
-        
+        Create = 1,
+        Login,
+        Back,
+        Exit
     }
 }

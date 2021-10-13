@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharpBank.Models.Exceptions
 {
-    public class AccountNumberException:Exception
+    public class AccountIdException:Exception
     {
     }
 }

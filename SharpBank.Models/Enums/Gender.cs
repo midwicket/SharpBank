@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpBank.Models.Exceptions
+namespace SharpBank.Models.Enums
 {
-    public class BankIdException:Exception
+    public enum Gender
     {
-        
+        Male,
+        Female,
+        Other
     }
 }

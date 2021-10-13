@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpBank.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,18 +10,13 @@ namespace SharpBank.Models
 {
     public class Account
     {
-        [Key]
-        public string AccountNumber { get; set; }
-        [Required]
-        public string UserName { get; set; }
-        [Required]
-        public string IFSC { get; set; }
+        public long AccountId { get; set; }
+        public string Name { get; set; }
+        public long BankId { get; set; }
         public string Password { get; set; }
         public decimal Balance { get; set; }
-
-        public Account()
-        {
-
-        }
+        public Gender Gender { get; set; }
+        public Status Status { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }
