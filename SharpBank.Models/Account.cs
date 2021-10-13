@@ -17,5 +17,6 @@ namespace SharpBank.Models
         public decimal Balance { get; set; }
         public Gender Gender { get; set; }
         public Status Status { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace SharpBank.CLI
     {
         public static string PrintReciept(Transaction t)
         {
-            Transaction trans = TransactionServices.GetTransaction(t.TransactionID);
+            Transaction trans = TransactionService.GetTransaction(t.TransactionID);
             string res = "";
             res += "Transaction ID : " + trans.TransactionID + Environment.NewLine;
             res += "-------------------" + Environment.NewLine;

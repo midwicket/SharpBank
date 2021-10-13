@@ -22,7 +22,7 @@ namespace SharpBank.CLI.Controllers
                 acc.Balance -= amount;
                 Transaction t = new Transaction
                 {
-                    TransactionID = "00" + (TransactionServices.GetTransactions().Count + 1).ToString(),
+                    TransactionID = "00" + (TransactionService.GetTransactions().Count + 1).ToString(),
                     SenderAccount = acc.AccountNumber,
                     SenderIFSC = acc.IFSC,
                     RecepientAccount = "Withdraw",
@@ -30,8 +30,8 @@ namespace SharpBank.CLI.Controllers
                     Amount = amount
 
                 };
-                AccountServices.UpdateAccount(acc);
-                TransactionServices.AddTransaction(t);
+                AccountService.UpdateAccount(acc);
+                TransactionService.AddTransaction(t);
                 return t;
             }
             catch (BalanceException) 
@@ -53,7 +53,7 @@ namespace SharpBank.CLI.Controllers
                 acc.Balance += amount;
                 Transaction t = new Transaction
                 {
-                    TransactionID = "00" + (TransactionServices.GetTransactions().Count + 1).ToString(),
+                    TransactionID = "00" + (TransactionService.GetTransactions().Count + 1).ToString(),
                     RecepientAccount = acc.AccountNumber,
                     RecepientIFSC = acc.IFSC,
                     SenderAccount = "Deposit",
@@ -61,8 +61,8 @@ namespace SharpBank.CLI.Controllers
                     Amount = amount
 
                 };
-                AccountServices.UpdateAccount(acc);
-                TransactionServices.AddTransaction(t);
+                AccountService.UpdateAccount(acc);
+                TransactionService.AddTransaction(t);
                 return t;
             }
             catch (Exception)
@@ -84,7 +84,7 @@ namespace SharpBank.CLI.Controllers
                 racc.Balance += amount;
                 Transaction t = new Transaction
                 {
-                    TransactionID = "00" + (TransactionServices.GetTransactions().Count + 1).ToString(),
+                    TransactionID = "00" + (TransactionService.GetTransactions().Count + 1).ToString(),
                     SenderAccount = sacc.AccountNumber,
                     SenderIFSC = sacc.IFSC,
                     RecepientAccount = racc.AccountNumber,
@@ -92,9 +92,9 @@ namespace SharpBank.CLI.Controllers
                     Amount = amount
 
                 };
-                AccountServices.UpdateAccount(sacc);
-                AccountServices.UpdateAccount(racc);
-                TransactionServices.AddTransaction(t);
+                AccountService.UpdateAccount(sacc);
+                AccountService.UpdateAccount(racc);
+                TransactionService.AddTransaction(t);
                 return t;
             }
             catch (BalanceException)
@@ -113,7 +113,7 @@ namespace SharpBank.CLI.Controllers
             List<Transaction> transactions = new List<Transaction>();
             try
             {
-                foreach (Transaction t in TransactionServices.GetTransactions())
+                foreach (Transaction t in TransactionService.GetTransactions())
                 {
                     if (((t.SenderIFSC == acc.IFSC) && (t.SenderAccount == acc.AccountNumber)) || ((t.RecepientIFSC == acc.IFSC) && (t.RecepientAccount == acc.AccountNumber)))
                     {

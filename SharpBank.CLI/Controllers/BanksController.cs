@@ -53,7 +53,7 @@ namespace SharpBank.CLI.Controllers
         {
             try
             {
-                List<Bank> banks = BankServices.GetBanks();
+                List<Bank> banks = BankService.GetBanks();
                 if (banks == null)
                 {
                     throw new Exception("Internal error");
@@ -75,7 +75,7 @@ namespace SharpBank.CLI.Controllers
 
             try
             {
-                Bank b=BankServices.GetBank(ifsc);
+                Bank b=BankService.GetBank(ifsc);
                 if(b==null)
                 {
                     throw new IFSCException();

@@ -13,7 +13,7 @@ namespace SharpBank.CLI
         {
             Console.WriteLine("Choose Your Bank");
             int c = 1;
-            foreach (var x in BankServices.GetBanks()) 
+            foreach (var x in BankService.GetBanks()) 
             {
                 Console.WriteLine(c + " -> " + x.BankName);
                 c += 1;

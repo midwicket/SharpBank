@@ -18,8 +18,8 @@ namespace SharpBank.CLI.Controllers
             {
                 string name = Inputs.GetName();
                 string password = Inputs.GetPassword();
-                string accountNumber = AccountServices.GenerateAccountNumber(ifsc);
-                foreach (Account a in AccountServices.GetAccounts()) 
+                string accountNumber = AccountService.GenerateAccountNumber(ifsc);
+                foreach (Account a in AccountService.GetAccounts()) 
                 {
                     if (a.AccountNumber == accountNumber && a.IFSC == ifsc)
                     {
@@ -34,7 +34,7 @@ namespace SharpBank.CLI.Controllers
                     IFSC = ifsc,
                     Balance=0m
                 };
-                AccountServices.AddAccount(acc);
+                AccountService.AddAccount(acc);
                 return acc;
             }
             catch (AccountNumberException e)
@@ -53,7 +53,7 @@ namespace SharpBank.CLI.Controllers
 
             try
             {
-                Account acc=AccountServices.GetAccount(ifsc, accountNumber);
+                Account acc=AccountService.GetAccount(ifsc, accountNumber);
                 if(acc==null)
                 {
                     throw new AccountNumberException();
