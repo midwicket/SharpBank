@@ -46,7 +46,7 @@ namespace SharpBank.Services
         }
         public long GenerateId(long bankId)
         {
-            Random rand = new Random();
+            Random rand = new Random(321);
             Bank bank = bankService.GetBank(bankId);
             long Id;
             do

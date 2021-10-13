@@ -55,7 +55,7 @@ namespace SharpBank.CLI
                     {
                         case LoginOptions.Create:
                             userAccountId= accountsController.CreateAccount(userBankId);
-                            Console.WriteLine("Your account number is " + userAccountId + " Dont forget it .");
+                            Console.WriteLine("Your account number is " + userAccountId.ToString("D10") + " Dont forget it .");
                             break;
                         case LoginOptions.Login:
                             userAccountId = inputs.GetAccountId();
@@ -98,7 +98,9 @@ namespace SharpBank.CLI
                             }
                         case UserOptions.TransactionHistory:
                             List<Transaction> hist = accountsController.GetTransactionHistory(userBankId,userAccountId);
-                            
+
+                            Console.WriteLine("TransactionId | Source Bank | Source Account | Dest. Bank | Dest Account |  Amount  | Timestamp ");
+                            Console.WriteLine("-----------------------------------------------------------------------------------------------------------");
                             foreach (Transaction t in hist)
                             {
                                 Console.WriteLine(t.ToString());

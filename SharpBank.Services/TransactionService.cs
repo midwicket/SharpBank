@@ -18,7 +18,7 @@ namespace SharpBank.Services
         }
         public long GenerateId(long sourceBankId, long sourceAccountId, long destinationBankId,long destinationAccountId)
         {
-            Random rand = new Random();
+            Random rand = new Random(123);
             Account sourceAccount = accountService.GetAccount(sourceBankId, sourceAccountId);
             Account destinationAccount = accountService.GetAccount(destinationBankId, destinationAccountId);
 

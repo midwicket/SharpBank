@@ -19,7 +19,7 @@ namespace SharpBank.Services
         }
         public long GenerateId()
         {
-            Random rand = new Random();
+            Random rand = new Random(123);
             
             long Id;
             do
