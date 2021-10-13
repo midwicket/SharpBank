@@ -10,6 +10,11 @@ namespace SharpBank.Services
     public class  Datastore
     {
         public List<Bank> Banks { get; set; }
-        
+        public Datastore()
+        {
+            Banks = new List<Bank>();
+            Banks.Add(new Bank { BankId=0});
+            
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace SharpBank.CLI
         public  void BankMenu(Datastore datastore)
         {
             Console.WriteLine("Choose Your Bank");
-            Console.WriteLine("Id | Name");
+            Console.WriteLine("Bank Id | Name");
             Console.WriteLine("------------------");
             int c = 1;
             foreach (Bank bank in datastore.Banks) {

@@ -46,7 +46,7 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public   decimal GetAmount()
+        public decimal GetAmount()
         {
             Console.WriteLine("Please Enter The Amount :");
             return Convert.ToDecimal(Console.ReadLine());

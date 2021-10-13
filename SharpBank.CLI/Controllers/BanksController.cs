@@ -22,11 +22,11 @@ namespace SharpBank.CLI.Controllers
             this.inputs = inputs;
         }
 
-        public long CreateBank() {
+        public long CreateBank(string v) {
             long id=0;
             try
             {
-                string name = inputs.GetName();
+                string name = v;
                 id =bankService.AddBank(name);
            
             }

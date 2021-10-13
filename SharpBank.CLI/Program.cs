@@ -11,7 +11,8 @@ namespace SharpBank.CLI
     {
         static void Main(string[] args)
         {
-            Menu menu = new Menu();
+
+
             Inputs inputs = new Inputs();
             Datastore datastore = new Datastore();
             
@@ -23,11 +24,21 @@ namespace SharpBank.CLI
             BanksController banksController = new BanksController(bankService,inputs);
             AccountsController accountsController = new AccountsController(accountService,inputs);
             TransactionsController transactionsController = new TransactionsController(transactionService);
+            //SEED
 
+            
+            banksController.CreateBank("Yaxis");
+            banksController.CreateBank("YesBI");
+            banksController.CreateBank("FDHC");
+            banksController.CreateBank("YCYCY");
+            
+            
+
+
+            Menu menu = new Menu();
 
 
             int currentMenu = 0;
-            Account acc = null;
             long userBankId = 0;
             long userAccountId = 0;
             while (true) { 
@@ -44,12 +55,12 @@ namespace SharpBank.CLI
                     {
                         case LoginOptions.Create:
                             userAccountId= accountsController.CreateAccount(userBankId);
-                            Console.WriteLine("Your account number is " + acc.AccountId + "  and bank BankId " + acc.BankId + " Dont forget it .");
+                            Console.WriteLine("Your account number is " + userAccountId + " Dont forget it .");
                             break;
                         case LoginOptions.Login:
                             userAccountId = inputs.GetAccountId();
                             string userPassword = inputs.GetPassword();
-                            acc = accountsController.GetAccount(userBankId, userAccountId);
+                            
                             currentMenu++;
                             break;
                         case LoginOptions.Back:
@@ -82,7 +93,7 @@ namespace SharpBank.CLI
                             break;
                         case UserOptions.ShowBalance:
                             {
-                                Console.WriteLine("Your Balance is: " + accountsController.GetBalance(acc));
+                                Console.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
                                 break;
                             }
                         case UserOptions.TransactionHistory:

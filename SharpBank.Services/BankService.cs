@@ -15,6 +15,7 @@ namespace SharpBank.Services
         public BankService(Datastore datastore)
         {
             this.datastore = datastore;
+            datastore.Banks.Add(new Bank { BankId = 0, Accounts = new List<Account> { new Account { AccountId=0,BankId=0} } });
         }
         public long GenerateId()
         {
