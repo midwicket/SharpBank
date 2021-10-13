@@ -13,8 +13,6 @@ namespace SharpBank.Services
         public Datastore()
         {
             Banks = new List<Bank>();
-            Banks.Add(new Bank { BankId=0});
-            
         }
     }
 }
