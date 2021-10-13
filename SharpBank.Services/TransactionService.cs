@@ -39,9 +39,11 @@ namespace SharpBank.Services
 
             Transaction transaction = new Transaction
             {
-                TransactionId = GenerateId(sourceBankId,sourceAccountId,destinationBankId,destinationAccountId),
+                TransactionId = GenerateId(sourceBankId, sourceAccountId, destinationBankId, destinationAccountId),
                 SourceAccountId = sourceAccountId,
-                DestinationAccountId =destinationAccountId,
+                DestinationAccountId = destinationAccountId,
+                SourceBankId = sourceBankId,
+                DestinationBankId = destinationBankId,
                 Amount = amount,
                 On=DateTime.Now
             };
