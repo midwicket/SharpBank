@@ -20,7 +20,7 @@ namespace SharpBank.Models
         public TransactionType Type { get; set; }
         public override string ToString()
         {
-            string res = $"  {TransactionId.ToString("D10")}  | {SourceBankId.ToString("D10")}  |   {SourceAccountId.ToString("D10")}   |   {DestinationBankId.ToString("D10")}  |  {DestinationAccountId.ToString("D10")} | {Amount.ToString("C3")} | {On}";
+            string res = $"  {TransactionId.ToString("D10")}  | {SourceBankId.ToString("D10")}  |   {SourceAccountId.ToString("D10")}   |   {DestinationBankId.ToString("D10")}  |  {DestinationAccountId.ToString("D10")}   | {Amount.ToString("C3")} | {On}";
             return res;
         }
     }

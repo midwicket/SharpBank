@@ -99,7 +99,7 @@ namespace SharpBank.CLI
                         case UserOptions.TransactionHistory:
                             List<Transaction> hist = accountsController.GetTransactionHistory(userBankId,userAccountId);
 
-                            Console.WriteLine("TransactionId | Source Bank | Source Account | Dest. Bank | Dest Account |  Amount  | Timestamp ");
+                            Console.WriteLine("TransactionId | Source Bank | Source Account |  Dest. Bank   | Dest. Account |  Amount  | Timestamp ");
                             Console.WriteLine("-----------------------------------------------------------------------------------------------------------");
                             foreach (Transaction t in hist)
                             {
