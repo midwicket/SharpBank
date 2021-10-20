@@ -48,6 +48,10 @@ namespace SharpBank.CLI
                 if (currentMenu == 0) {
                     AnsiConsole.Write(new Rule("[red]SharpBank[/]"));
                     bankName = AnsiConsole.Prompt(menu.BankMenu(datastore));
+                    if (bankName == "Exit")
+                    {
+                        Environment.Exit(0);
+                    }
                     userBankId = banksController.GetBankByName(bankName).BankId;
                     currentMenu++;
                 }
@@ -97,7 +101,7 @@ namespace SharpBank.CLI
                             
                             transactionsController.Transfer(userBankId,userAccountId,  recp[0],recp[1],amount);
                             break;
-                        case UserOptions.ShowBalance:
+                        case UserOptions.Balance:
                             {
                                 AnsiConsole.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
                                 break;
@@ -111,21 +115,25 @@ namespace SharpBank.CLI
                             foreach (Transaction t in hist)
                             {
                                 table.AddRow(
-                                    "[red]"+t.TransactionId.ToString("D10") + "[/]",
-                                    "[green]" + t.SourceBankId.ToString("D10")+"[/]",
+                                    "[red]" + t.TransactionId.ToString("D10") + "[/]",
+                                    "[green]" + t.SourceBankId.ToString("D10") + "[/]",
                                     "[green]" + t.SourceAccountId.ToString("D10") + "[/]",
-                                    "[yellow]"+t.DestinationBankId.ToString("D10") + "[/]",
+                                    "[yellow]" + t.DestinationBankId.ToString("D10") + "[/]",
                                     "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
                                     //replace with CultureInfo.CurrentCulture
-                                    "[green]" + t.Amount.ToString("C3",CultureInfo.CreateSpecificCulture("en-US")) + "[/]",
-                                    "[yellow]"+t.On.ToString()+"[/]"
+                                    "[green]" + t.Amount.ToString("C3", CultureInfo.CreateSpecificCulture("en-US")) + "[/]",
+                                    "[yellow]" + t.On.ToString() + "[/]"
                                     );
-                            }
 
-                            AnsiConsole.Write(table);
+                            }
+                                AnsiConsole.Write(table);
+                                break;
+                        case UserOptions.Back:
+                            currentMenu--;
                             break;
                         case UserOptions.Exit:
                             currentMenu = 0;
+                            Environment.Exit(0);
                             break;
                         default:
                             AnsiConsole.WriteLine("Invalid ma");

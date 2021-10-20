@@ -11,8 +11,9 @@ namespace SharpBank.CLI.Enums
         Deposit = 1,
         Withdraw,
         Transfer,
-        ShowBalance,
+        Balance,
         TransactionHistory,
+        Back,
         Exit
 
     }

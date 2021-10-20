@@ -21,6 +21,7 @@ namespace SharpBank.CLI
             foreach (Bank bank in datastore.Banks) {
                 bankMenuPrompt.AddChoice(bank.Name);
             }
+            bankMenuPrompt.AddChoice("Exit");
             return bankMenuPrompt;
         }
         public SelectionPrompt<string> LoginMenu()
@@ -47,7 +48,9 @@ namespace SharpBank.CLI
                      "Withdraw",
                      "Transfer",
                      "Balance",
-                     "Transaction History"
+                     "Transaction History",
+                     "Back",
+                     "Exit"
                });
             return selectionPrompt;
         }
