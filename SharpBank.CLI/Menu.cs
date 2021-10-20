@@ -5,39 +5,51 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpBank.Models;
 using SharpBank.Services;
+using Spectre.Console;
 
 namespace SharpBank.CLI
 {
      class  Menu
     {
-        public  void BankMenu(Datastore datastore)
+        public SelectionPrompt<string> BankMenu(Datastore datastore)
         {
-            Console.WriteLine("Choose Your Bank");
-            Console.WriteLine("Bank Id    | Name");
-            Console.WriteLine("------------------");
-            int c = 1;
+            SelectionPrompt<string> bankMenuPrompt = new SelectionPrompt<string>()
+                .Title("Select [green]Bank[/] to perform operations")
+                .PageSize(10)
+                .MoreChoicesText("[grey]Move up and down to reveal more banks[/]");
+                
             foreach (Bank bank in datastore.Banks) {
-                Console.WriteLine(bank.BankId.ToString("D10") + " | " + bank.Name);
+                bankMenuPrompt.AddChoice(bank.Name);
             }
+            return bankMenuPrompt;
         }
-        public  void LoginMenu()
+        public SelectionPrompt<string> LoginMenu()
         {
-            Console.WriteLine("Option | Description");
-            Console.WriteLine("-------------------------");
-            Console.WriteLine("   1   | Create Account");
-            Console.WriteLine("   2   | Login");
-            Console.WriteLine("   3   | Back");
-            Console.WriteLine("   4   | Exit");
+            SelectionPrompt<string> selectionPrompt = new SelectionPrompt<string>()
+                .Title("Select one of the following [green]operations[/]")
+                .PageSize(10)
+                .AddChoices(new[] { 
+                    "Create Account" ,
+                    "Login",
+                    "Back",
+                    "Exit"
+                });
+            return selectionPrompt;
+
         }
-        public  void UserMenu()
+        public SelectionPrompt<string> UserMenu()
         {
-            Console.WriteLine("Option | Description");
-            Console.WriteLine("----------------------------------");
-            Console.WriteLine("   1   | Deposit");
-            Console.WriteLine("   2   | Withdraw");
-            Console.WriteLine("   3   | Transfer");
-            Console.WriteLine("   4   | Show Balance");
-            Console.WriteLine("   5   | Show Transaction History");
+            SelectionPrompt<string> selectionPrompt = new SelectionPrompt<string>()
+               .Title("Select one of the following [green]operations[/]")
+               .PageSize(10)
+               .AddChoices(new[] {
+                     "Deposit",
+                     "Withdraw",
+                     "Transfer",
+                     "Balance",
+                     "Transaction History"
+               });
+            return selectionPrompt;
         }
     }
 }

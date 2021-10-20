@@ -50,6 +50,8 @@ namespace SharpBank.Services
 
             return datastore.Banks.SingleOrDefault(b => b.BankId == bankId);
         }
-
+        public Bank GetBankByName(string name) {
+            return datastore.Banks.FirstOrDefault(b => b.Name == name);
+        }
     }
 }

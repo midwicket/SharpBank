@@ -1,4 +1,5 @@
 ﻿using SharpBank.Models.Enums;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,26 +13,48 @@ namespace SharpBank.CLI
     {
         public long GetAccountId()
         {
-            Console.WriteLine("Please Enter Your ID :");
-            return Convert.ToInt64(Console.ReadLine());
+            int id = AnsiConsole.Prompt<int>(
+                new TextPrompt<int>("Enter Account ID")
+                .Validate(id=> 
+                {
+                    return id switch
+                    {
+                        < 0 => ValidationResult.Error("[red]Negative Account Numbers[/] are not allowed"),
+                        0 => ValidationResult.Error("[red]Protected Account[/]. Access Denied."),
+                        >= int.MaxValue => ValidationResult.Error("[red]ID[/] Too large"),
+                        _ => ValidationResult.Success(),
+                    };
+                
+                })
+                
+                );
+            return id;
         }
         public string GetPassword()
         {
-            Console.WriteLine("Please Enter Your Password :");
-            return Console.ReadLine();
+            string password = AnsiConsole.Prompt(
+               new TextPrompt<string>("Enter [green] password [/]")
+               .PromptStyle("red")
+               .Secret()
+                );
+            return password;
         }
-        public   string GetName()
+        public string GetName()
         {
-            Console.WriteLine("Please Enter The Name :");
-            return Console.ReadLine();
+            var option = AnsiConsole.Ask<string>("Please Enter your Name");
+            return option;
         }
-        public   Gender GetGender()
+        public Gender GetGender()
         {
-            Console.WriteLine("Please Enter Your Gender (Male/Female/Other) :");
-            Enum.TryParse(Console.ReadLine(),out Gender gender);
+            var option = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("Select [green]Gender[/]")
+                .AddChoices("Male", "Female", "Other")
+                );
+            Enum.TryParse(option,out Gender gender);
             return gender;
         }
-        public   int GetSelection()
+        public int GetSelection()
         {
             try
             {

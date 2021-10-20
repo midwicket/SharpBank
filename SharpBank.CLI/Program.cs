@@ -4,6 +4,8 @@ using SharpBank.Services;
 using SharpBank.Models;
 using SharpBank.CLI.Controllers;
 using SharpBank.CLI.Enums;
+using Spectre.Console;
+using System.Globalization;
 
 namespace SharpBank.CLI
 {
@@ -39,28 +41,31 @@ namespace SharpBank.CLI
 
 
             int currentMenu = 0;
+            string bankName = "";
             long userBankId = 0;
             long userAccountId = 0;
             while (true) { 
                 if (currentMenu == 0) {
-                    menu.BankMenu(datastore);
-                    long bnk = inputs.GetSelection();
-                    userBankId = bnk;
+                    AnsiConsole.Write(new Rule("[red]SharpBank[/]"));
+                    bankName = AnsiConsole.Prompt(menu.BankMenu(datastore));
+                    userBankId = banksController.GetBankByName(bankName).BankId;
                     currentMenu++;
                 }
                 if (currentMenu == 1) {
-                    menu.LoginMenu();
-                    LoginOptions option = (LoginOptions)Enum.Parse(typeof(LoginOptions), Console.ReadLine());
+                    AnsiConsole.Write(new Rule("[red]"+bankName+"[/] Services"));
+
+                    LoginOptions option;
+                    Enum.TryParse(AnsiConsole.Prompt(menu.LoginMenu()).Split()[0], out option);
+
                     switch(option)
                     {
                         case LoginOptions.Create:
-                            userAccountId= accountsController.CreateAccount(userBankId);
-                            Console.WriteLine("Your account number is " + userAccountId.ToString("D10") + " Dont forget it .");
+                            userAccountId = accountsController.CreateAccount(userBankId);
+                            AnsiConsole.WriteLine("Your account number is " + userAccountId.ToString("D10") + " Dont forget it .");
                             break;
                         case LoginOptions.Login:
                             userAccountId = inputs.GetAccountId();
                             string userPassword = inputs.GetPassword();
-                            
                             currentMenu++;
                             break;
                         case LoginOptions.Back:
@@ -73,7 +78,8 @@ namespace SharpBank.CLI
                 }
                 if (currentMenu == 2) {
                     menu.UserMenu();
-                    UserOptions option = (UserOptions)Enum.Parse(typeof(UserOptions), Console.ReadLine());
+                    UserOptions option;
+                    Enum.TryParse(AnsiConsole.Prompt(menu.UserMenu()).Replace(" ",""),out option);
                     decimal amount = 0m;
                     switch (option)
                     {
@@ -93,24 +99,36 @@ namespace SharpBank.CLI
                             break;
                         case UserOptions.ShowBalance:
                             {
-                                Console.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
+                                AnsiConsole.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
                                 break;
                             }
                         case UserOptions.TransactionHistory:
                             List<Transaction> hist = accountsController.GetTransactionHistory(userBankId,userAccountId);
 
-                            Console.WriteLine("TransactionId | Source Bank | Source Account |  Dest. Bank   | Dest. Account |  Amount  | Timestamp ");
-                            Console.WriteLine("-----------------------------------------------------------------------------------------------------------");
+                            Table table = new Table();
+                            table.Border(TableBorder.Rounded);
+                            table.AddColumns("TransactionId" , "Source Bank" , "Source Account" , " Dest. Bank  " , "Dest. Account" , " Amount " , "Timestamp ");
                             foreach (Transaction t in hist)
                             {
-                                Console.WriteLine(t.ToString());
+                                table.AddRow(
+                                    "[red]"+t.TransactionId.ToString("D10") + "[/]",
+                                    "[green]" + t.SourceBankId.ToString("D10")+"[/]",
+                                    "[green]" + t.SourceAccountId.ToString("D10") + "[/]",
+                                    "[yellow]"+t.DestinationBankId.ToString("D10") + "[/]",
+                                    "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
+                                    //replace with CultureInfo.CurrentCulture
+                                    "[green]" + t.Amount.ToString("C3",CultureInfo.CreateSpecificCulture("en-US")) + "[/]",
+                                    "[yellow]"+t.On.ToString()+"[/]"
+                                    );
                             }
+
+                            AnsiConsole.Write(table);
                             break;
                         case UserOptions.Exit:
                             currentMenu = 0;
                             break;
                         default:
-                            Console.WriteLine("Invalid ma");
+                            AnsiConsole.WriteLine("Invalid ma");
                             break;
 
                     }
