@@ -69,10 +69,22 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public Money<decimal> GetAmount()
+        public Currency GetCurrency() {
+            SelectionPrompt<Currency> selectionPrompt = new SelectionPrompt<Currency>().Title("Select Currency");
+            IEnumerable<Currency> currencies = (Currency[])Enum.GetValues(typeof(Currency));
+
+            selectionPrompt.AddChoices(currencies);
+
+            Currency option = AnsiConsole.Prompt(
+                selectionPrompt
+                );
+            return option;
+        }
+        public Money<decimal> GetAmount(Currency currency)
         {
+
             Console.WriteLine("Please Enter The Amount :");
-            return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),Currency.INR);
+            return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),currency);
         }
         public   List<long> GetRecipient()
         {

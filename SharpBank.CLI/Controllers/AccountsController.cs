@@ -63,7 +63,7 @@ namespace SharpBank.CLI.Controllers
             }
             return null;
         }
-        public Money<decimal> GetBalance(long bankId,long accountId)
+        public Wallet<decimal> GetBalance(long bankId,long accountId)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace SharpBank.CLI.Controllers
                 {
                     throw new AccountIdException();
                 }
-                return acc.Balance;
+                return acc.Assets;
             }
             catch (AccountIdException e)
             {

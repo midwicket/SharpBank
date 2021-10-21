@@ -1,5 +1,6 @@
 ﻿using Money;
 using SharpBank.Models;
+using SharpBank.Models.Enums;
 using SharpBank.Models.Exceptions;
 using SharpBank.Services;
 using System;
@@ -23,7 +24,7 @@ namespace SharpBank.CLI.Controllers
             long id=0;
             try
             {
-                id=transactionService.AddTransaction(bankId, accountId, 0, 0, amount);
+                id=transactionService.AddTransaction(TransactionType.CASH,bankId, accountId, 0, 0, amount);
             }
             catch (BalanceException) 
             {
@@ -42,7 +43,7 @@ namespace SharpBank.CLI.Controllers
             long id = 0;
             try
             {
-                id = transactionService.AddTransaction(0,0,bankId, accountId, amount);
+                id = transactionService.AddTransaction(TransactionType.CASH,0,0,bankId, accountId, amount);
             }
             catch (BalanceException)
             {
@@ -55,12 +56,12 @@ namespace SharpBank.CLI.Controllers
             }
             return id;
         }
-        public long Transfer(long sourceBankId,long sourceAccountId,long destinationBankId,long destinationAccountId ,Money<decimal> amount)
+        public long Transfer(TransactionType transactionType ,long sourceBankId,long sourceAccountId,long destinationBankId,long destinationAccountId ,Money<decimal> amount)
         {
             long id = 0;
             try
             {
-                id=transactionService.AddTransaction(sourceBankId, sourceAccountId, destinationBankId, destinationAccountId, amount);
+                id=transactionService.AddTransaction(transactionType, sourceBankId, sourceAccountId, destinationBankId, destinationAccountId, amount);
             }
             catch (BalanceException)
             {

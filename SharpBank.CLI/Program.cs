@@ -7,6 +7,7 @@ using SharpBank.CLI.Enums;
 using Spectre.Console;
 using System.Globalization;
 using Money;
+using SharpBank.Models.Enums;
 
 namespace SharpBank.CLI
 {
@@ -27,9 +28,13 @@ namespace SharpBank.CLI
             BanksController banksController = new BanksController(bankService,inputs);
             AccountsController accountsController = new AccountsController(accountService,inputs);
             TransactionsController transactionsController = new TransactionsController(transactionService);
+
+
+            CurrencyConverterService currencyConverterService = new CurrencyConverterService();
+
             //SEED
 
-            
+
             banksController.CreateBank("Yaxis");
             banksController.CreateBank("YesBI");
             banksController.CreateBank("FDHC");
@@ -85,26 +90,35 @@ namespace SharpBank.CLI
                     menu.UserMenu();
                     UserOptions option;
                     Enum.TryParse(AnsiConsole.Prompt(menu.UserMenu()).Replace(" ",""),out option);
-                    Money<decimal> amount = new Money<decimal>(0, Currency.INR);
+                    Money<decimal> amount;
+                    Currency currency;
+
+
                     switch (option)
                     {
                         case UserOptions.Deposit:
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             transactionsController.Deposit(userBankId,userAccountId,amount);
                             break;
                         case UserOptions.Withdraw:
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             transactionsController.Withdraw(userBankId, userAccountId, amount);
                             break;
                         case UserOptions.Transfer:
                             List<long> recp = inputs.GetRecipient();
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             
-                            transactionsController.Transfer(userBankId,userAccountId,  recp[0],recp[1],amount);
+                            transactionsController.Transfer(TransactionType.RTGS,userBankId,userAccountId,  recp[0],recp[1],amount);
                             break;
                         case UserOptions.Balance:
                             {
-                                AnsiConsole.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
+                                var wallet = accountsController.GetBalance(userBankId, userAccountId);
+                                currency = inputs.GetCurrency();
+                                Money<decimal> money = wallet.Evaluate(currencyConverterService, currency);
+                                AnsiConsole.WriteLine("Your Balance is: " + money.Amount + " " + money.Currency);
                                 break;
                             }
                         case UserOptions.TransactionHistory:
@@ -122,7 +136,7 @@ namespace SharpBank.CLI
                                     "[yellow]" + t.DestinationBankId.ToString("D10") + "[/]",
                                     "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
                                     //replace with CultureInfo.CurrentCulture
-                                    "[green]" + t.Amount.Amount + t.Amount.Currency.ToString() + "[/]",
+                                    "[green]" + t.Amount.Amount +" "+ t.Amount.Currency.ToString() + "[/]",
                                     "[yellow]" + t.On.ToString() + "[/]"
                                     ) ;
 
