@@ -6,6 +6,7 @@ using SharpBank.CLI.Controllers;
 using SharpBank.CLI.Enums;
 using Spectre.Console;
 using System.Globalization;
+using Money;
 
 namespace SharpBank.CLI
 {
@@ -84,7 +85,7 @@ namespace SharpBank.CLI
                     menu.UserMenu();
                     UserOptions option;
                     Enum.TryParse(AnsiConsole.Prompt(menu.UserMenu()).Replace(" ",""),out option);
-                    decimal amount = 0m;
+                    Money<decimal> amount = new Money<decimal>(0, Currency.INR);
                     switch (option)
                     {
                         case UserOptions.Deposit:
@@ -121,9 +122,9 @@ namespace SharpBank.CLI
                                     "[yellow]" + t.DestinationBankId.ToString("D10") + "[/]",
                                     "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
                                     //replace with CultureInfo.CurrentCulture
-                                    "[green]" + t.Amount.ToString("C3", CultureInfo.CreateSpecificCulture("en-US")) + "[/]",
+                                    "[green]" + t.Amount.Amount + t.Amount.Currency.ToString() + "[/]",
                                     "[yellow]" + t.On.ToString() + "[/]"
-                                    );
+                                    ) ;
 
                             }
                                 AnsiConsole.Write(table);

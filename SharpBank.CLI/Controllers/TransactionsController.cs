@@ -1,4 +1,5 @@
-﻿using SharpBank.Models;
+﻿using Money;
+using SharpBank.Models;
 using SharpBank.Models.Exceptions;
 using SharpBank.Services;
 using System;
@@ -17,7 +18,7 @@ namespace SharpBank.CLI.Controllers
         {
             this.transactionService = transactionService;
         }
-        public long Withdraw(long bankId, long accountId, decimal amount)
+        public long Withdraw(long bankId, long accountId, Money<decimal> amount)
         {
             long id=0;
             try
@@ -35,7 +36,7 @@ namespace SharpBank.CLI.Controllers
             }
             return id;
         }
-        public long Deposit(long bankId, long accountId, decimal amount)
+        public long Deposit(long bankId, long accountId, Money<decimal> amount)
         {
 
             long id = 0;
@@ -54,7 +55,7 @@ namespace SharpBank.CLI.Controllers
             }
             return id;
         }
-        public long Transfer(long sourceBankId,long sourceAccountId,long destinationBankId,long destinationAccountId ,decimal amount)
+        public long Transfer(long sourceBankId,long sourceAccountId,long destinationBankId,long destinationAccountId ,Money<decimal> amount)
         {
             long id = 0;
             try

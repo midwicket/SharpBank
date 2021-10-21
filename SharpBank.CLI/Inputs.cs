@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Money;
 
 namespace SharpBank.CLI
 {
@@ -69,10 +69,10 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public decimal GetAmount()
+        public Money<decimal> GetAmount()
         {
             Console.WriteLine("Please Enter The Amount :");
-            return Convert.ToDecimal(Console.ReadLine());
+            return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),Currency.INR);
         }
         public   List<long> GetRecipient()
         {

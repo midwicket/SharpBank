@@ -1,4 +1,5 @@
-﻿using SharpBank.Models.Enums;
+﻿using Money;
+using SharpBank.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,12 +16,12 @@ namespace SharpBank.Models
         public long DestinationBankId { get; set; }
         public long SourceAccountId { get; set; }
         public long DestinationAccountId { get; set; }
-        public decimal Amount { get; set; }
+        public Money<decimal> Amount { get; set; }
         public DateTime On { get; set; }
         public TransactionType Type { get; set; }
         public override string ToString()
         {
-            string res = $"  {TransactionId.ToString("D10")}  | {SourceBankId.ToString("D10")}  |   {SourceAccountId.ToString("D10")}   |   {DestinationBankId.ToString("D10")}  |  {DestinationAccountId.ToString("D10")}   | {Amount.ToString("C3")} | {On}";
+            string res = $"  {TransactionId.ToString("D10")}  | {SourceBankId.ToString("D10")}  |   {SourceAccountId.ToString("D10")}   |   {DestinationBankId.ToString("D10")}  |  {DestinationAccountId.ToString("D10")}   | {Amount.ToString()} | {On}";
             return res;
         }
     }

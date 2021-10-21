@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Money;
 using SharpBank.Models;
 using SharpBank.Models.Enums;
 using SharpBank.Models.Exceptions;
@@ -22,7 +23,7 @@ namespace SharpBank.Services
                 Gender = Gender.Other,
                 AccountId = 0,
                 BankId = 0,
-                Balance = 0m,
+                Balance = new Money<decimal>(0m,Currency.INR),
                 Status = Status.Active,
                 Transactions = new List<Transaction>()
             };
@@ -37,7 +38,7 @@ namespace SharpBank.Services
                 Gender = gender,
                 AccountId = GenerateId(bankId),
                 BankId = bankId,
-                Balance = 0m,
+                Balance = new Money<decimal>(0m,Currency.INR),
                 Status = Status.Active,
                 Transactions = new List<Transaction>()
             };
@@ -62,10 +63,10 @@ namespace SharpBank.Services
         {
             return bankService.GetBank(bankId).Accounts.SingleOrDefault(a=>a.AccountId == accountId); 
         }
-        public void UpdateBalance(long bankId,long accountId,decimal balance)
+        public void UpdateBalance(long bankId,long accountId,Wallet<decimal> wallet)
         {
             Account acc = GetAccount(bankId, accountId);
-            acc.Balance = balance;
+            acc.Assets = wallet;
         }
         public void RemoveAccount(long bankId, long accountId)
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpBank.Models.Enums;
+using Money;
 
 namespace SharpBank.CLI.Controllers
 {
@@ -62,7 +63,7 @@ namespace SharpBank.CLI.Controllers
             }
             return null;
         }
-        public decimal GetBalance(long bankId,long accountId)
+        public Money<decimal> GetBalance(long bankId,long accountId)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace SharpBank.CLI.Controllers
             {
                 Console.WriteLine("Internal Error");
             }
-            return -1m;
+            return null;
         }
         public List<Transaction> GetTransactionHistory(long bankId, long accountId)
         {
