@@ -1,37 +1,75 @@
 ﻿using SharpBank.Models.Enums;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Money;
 
 namespace SharpBank.CLI
 {
-    public   class Inputs
+    public class Inputs
     {
         public long GetAccountId()
         {
-            Console.WriteLine("Please Enter Your ID :");
-            return Convert.ToInt64(Console.ReadLine());
+            int id = AnsiConsole.Prompt<int>(
+                new TextPrompt<int>("Enter Account ID")
+                .Validate(id=> 
+                {
+                    return id switch
+                    {
+                        < 0 => ValidationResult.Error("[red]Negative Account Numbers[/] are not allowed"),
+                        0 => ValidationResult.Error("[red]Protected Account[/]. Access Denied."),
+                        >= int.MaxValue => ValidationResult.Error("[red]ID[/] Too large"),
+                        _ => ValidationResult.Success(),
+                    };
+                
+                })
+                
+                );
+            return id;
         }
         public string GetPassword()
         {
-            Console.WriteLine("Please Enter Your Password :");
-            return Console.ReadLine();
+            string password = AnsiConsole.Prompt(
+               new TextPrompt<string>("Enter [green] password [/]")
+               .PromptStyle("red")
+               .Secret()
+               );
+
+            return password;
         }
-        public   string GetName()
+        public string GetPassword(string hashedPassword)
         {
-            Console.WriteLine("Please Enter The Name :");
-            return Console.ReadLine();
+            string password = AnsiConsole.Prompt(
+               new TextPrompt<string>("Enter [green] password [/]")
+               .PromptStyle("red")
+               .Secret()
+               .Validate(p =>
+               {
+                   return p.GetHashCode().ToString() == hashedPassword ? ValidationResult.Success() : ValidationResult.Error("Wrong Password");
+
+               }));
+                
+            return password;
         }
-        public   Gender GetGender()
+        public string GetName()
         {
-            Console.WriteLine("Please Enter Your Gender (Male/Female/Other) :");
-            Enum.TryParse(Console.ReadLine(),out Gender gender);
+            var option = AnsiConsole.Ask<string>("Please Enter your Name");
+            return option;
+        }
+        public Gender GetGender()
+        {
+            var option = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title("Select [green]Gender[/]")
+                .AddChoices("Male", "Female", "Other")
+                );
+            Enum.TryParse(option,out Gender gender);
             return gender;
         }
-        public   int GetSelection()
+        public int GetSelection()
         {
             try
             {
@@ -46,10 +84,22 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public decimal GetAmount()
+        public Currency GetCurrency() {
+            SelectionPrompt<Currency> selectionPrompt = new SelectionPrompt<Currency>().Title("Select Currency");
+            IEnumerable<Currency> currencies = (Currency[])Enum.GetValues(typeof(Currency));
+
+            selectionPrompt.AddChoices(currencies);
+
+            Currency option = AnsiConsole.Prompt(
+                selectionPrompt
+                );
+            return option;
+        }
+        public Money<decimal> GetAmount(Currency currency)
         {
+
             Console.WriteLine("Please Enter The Amount :");
-            return Convert.ToDecimal(Console.ReadLine());
+            return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),currency);
         }
         public   List<long> GetRecipient()
         {

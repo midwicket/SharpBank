@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Money;
 using SharpBank.Models;
+using SharpBank.Models.Enums;
 using SharpBank.Models.Exceptions;
 
 namespace SharpBank.Services
@@ -32,7 +34,7 @@ namespace SharpBank.Services
                     (destinationAccount.Transactions.SingleOrDefault(t => t.TransactionId == Id)!=null));
             return Id;
         }
-        public long AddTransaction(long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,decimal amount)
+        public long AddTransaction(TransactionType transactionType,long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
         {
             accountService.UpdateBalance(sourceBankId,sourceAccountId, accountService.GetAccount(sourceBankId, sourceAccountId).Balance - amount);
             accountService.UpdateBalance(destinationBankId, destinationAccountId, accountService.GetAccount(destinationBankId, destinationAccountId).Balance + amount);

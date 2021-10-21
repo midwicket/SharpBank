@@ -43,6 +43,29 @@ namespace SharpBank.CLI.Controllers
 
 
         }
+        public Bank GetBankByName(string name)
+        {
+            try
+            {
+                Bank b = bankService.GetBankByName(name);
+                if (b == null)
+                {
+                    throw new BankIdException();
+                }
+                return b;
+            }
+            catch (BankIdException e)
+            {
+
+                Console.WriteLine("Bank does not exist.");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Internal Error");
+            }
+            return null;
+        }
+
         public Bank GetBank(long bankId)
         {
 
@@ -67,4 +90,5 @@ namespace SharpBank.CLI.Controllers
             return null;
         }
     }
+
 }

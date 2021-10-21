@@ -4,6 +4,10 @@ using SharpBank.Services;
 using SharpBank.Models;
 using SharpBank.CLI.Controllers;
 using SharpBank.CLI.Enums;
+using Spectre.Console;
+using System.Globalization;
+using Money;
+using SharpBank.Models.Enums;
 
 namespace SharpBank.CLI
 {
@@ -24,9 +28,13 @@ namespace SharpBank.CLI
             BanksController banksController = new BanksController(bankService,inputs);
             AccountsController accountsController = new AccountsController(accountService,inputs);
             TransactionsController transactionsController = new TransactionsController(transactionService);
+
+
+            CurrencyConverterService currencyConverterService = new CurrencyConverterService();
+
             //SEED
 
-            
+
             banksController.CreateBank("Yaxis");
             banksController.CreateBank("YesBI");
             banksController.CreateBank("FDHC");
@@ -39,28 +47,37 @@ namespace SharpBank.CLI
 
 
             int currentMenu = 0;
+            string bankName = "";
             long userBankId = 0;
             long userAccountId = 0;
             while (true) { 
                 if (currentMenu == 0) {
-                    menu.BankMenu(datastore);
-                    long bnk = inputs.GetSelection();
-                    userBankId = bnk;
+                    AnsiConsole.Write(new Rule("[red]SharpBank[/]"));
+                    bankName = AnsiConsole.Prompt(menu.BankMenu(datastore));
+                    if (bankName == "Exit")
+                    {
+                        Environment.Exit(0);
+                    }
+                    userBankId = banksController.GetBankByName(bankName).BankId;
                     currentMenu++;
                 }
                 if (currentMenu == 1) {
-                    menu.LoginMenu();
-                    LoginOptions option = (LoginOptions)Enum.Parse(typeof(LoginOptions), Console.ReadLine());
+                    AnsiConsole.Write(new Rule("[red]"+bankName+"[/] Services"));
+
+                    LoginOptions option;
+                    Enum.TryParse(AnsiConsole.Prompt(menu.LoginMenu()).Split()[0], out option);
+
                     switch(option)
                     {
                         case LoginOptions.Create:
-                            userAccountId= accountsController.CreateAccount(userBankId);
-                            Console.WriteLine("Your account number is " + userAccountId.ToString("D10") + " Dont forget it .");
+                            userAccountId = accountsController.CreateAccount(userBankId);
+                            AnsiConsole.WriteLine("Your account number is " + userAccountId.ToString("D10") + " Dont forget it .");
                             break;
                         case LoginOptions.Login:
                             userAccountId = inputs.GetAccountId();
-                            string userPassword = inputs.GetPassword();
-                            
+                            string hashedPassword = accountsController.GetHashedPassword(userBankId,userAccountId);
+                            string userPassword = inputs.GetPassword(hashedPassword);
+
                             currentMenu++;
                             break;
                         case LoginOptions.Back:
@@ -73,44 +90,70 @@ namespace SharpBank.CLI
                 }
                 if (currentMenu == 2) {
                     menu.UserMenu();
-                    UserOptions option = (UserOptions)Enum.Parse(typeof(UserOptions), Console.ReadLine());
-                    decimal amount = 0m;
+                    UserOptions option;
+                    Enum.TryParse(AnsiConsole.Prompt(menu.UserMenu()).Replace(" ",""),out option);
+                    Money<decimal> amount;
+                    Currency currency;
+
+
                     switch (option)
                     {
                         case UserOptions.Deposit:
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             transactionsController.Deposit(userBankId,userAccountId,amount);
                             break;
                         case UserOptions.Withdraw:
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             transactionsController.Withdraw(userBankId, userAccountId, amount);
                             break;
                         case UserOptions.Transfer:
                             List<long> recp = inputs.GetRecipient();
-                            amount = inputs.GetAmount();
+                            currency = inputs.GetCurrency();
+                            amount = inputs.GetAmount(currency);
                             
-                            transactionsController.Transfer(userBankId,userAccountId,  recp[0],recp[1],amount);
+                            transactionsController.Transfer(TransactionType.RTGS,userBankId,userAccountId,  recp[0],recp[1],amount);
                             break;
-                        case UserOptions.ShowBalance:
+                        case UserOptions.Balance:
                             {
-                                Console.WriteLine("Your Balance is: " + accountsController.GetBalance(userBankId,userAccountId));
+                                var wallet = accountsController.GetBalance(userBankId, userAccountId);
+                                currency = inputs.GetCurrency();
+                                Money<decimal> money = wallet.Evaluate(currencyConverterService, currency);
+                                AnsiConsole.WriteLine("Your Balance is: " + money.Amount + " " + money.Currency);
                                 break;
                             }
                         case UserOptions.TransactionHistory:
                             List<Transaction> hist = accountsController.GetTransactionHistory(userBankId,userAccountId);
 
-                            Console.WriteLine("TransactionId | Source Bank | Source Account | Dest. Bank | Dest Account |  Amount  | Timestamp ");
-                            Console.WriteLine("-----------------------------------------------------------------------------------------------------------");
+                            Table table = new Table();
+                            table.Border(TableBorder.Rounded);
+                            table.AddColumns("TransactionId" , "Source Bank" , "Source Account" , " Dest. Bank  " , "Dest. Account" , " Amount " , "Timestamp ");
                             foreach (Transaction t in hist)
                             {
-                                Console.WriteLine(t.ToString());
+                                table.AddRow(
+                                    "[red]" + t.TransactionId.ToString("D10") + "[/]",
+                                    "[green]" + t.SourceBankId.ToString("D10") + "[/]",
+                                    "[green]" + t.SourceAccountId.ToString("D10") + "[/]",
+                                    "[yellow]" + t.DestinationBankId.ToString("D10") + "[/]",
+                                    "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
+                                    //replace with CultureInfo.CurrentCulture
+                                    "[green]" + t.Amount.Amount +" "+ t.Amount.Currency.ToString() + "[/]",
+                                    "[yellow]" + t.On.ToString() + "[/]"
+                                    ) ;
+
                             }
+                                AnsiConsole.Write(table);
+                                break;
+                        case UserOptions.Back:
+                            currentMenu--;
                             break;
                         case UserOptions.Exit:
                             currentMenu = 0;
+                            Environment.Exit(0);
                             break;
                         default:
-                            Console.WriteLine("Invalid ma");
+                            AnsiConsole.WriteLine("Invalid ma");
                             break;
 
                     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpBank.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,6 +18,13 @@ namespace SharpBank.Models
         public string CreatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
+
+        public decimal GetRate(TransactionType transactionType) => transactionType switch
+        {
+            TransactionType.RTGS => 2m,
+            TransactionType.IMPS => 5m,
+            _ => 0m
+        };
 
         public ICollection<Account> Accounts { get; set; }
 

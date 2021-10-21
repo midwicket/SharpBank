@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Money;
 using SharpBank.Models;
 using SharpBank.Models.Enums;
 using SharpBank.Models.Exceptions;
@@ -22,14 +23,20 @@ namespace SharpBank.Services
                 Gender = Gender.Other,
                 AccountId = 0,
                 BankId = 0,
-                Balance = 0m,
+                Password = "".GetHashCode().ToString(),
+                Balance = new Money<decimal>(0m,Currency.INR),
                 Status = Status.Active,
                 Transactions = new List<Transaction>()
             };
             bankService.GetBank(0).Accounts.Add(acc);
         }
+        public string GetHashedPassword(long bankId, long accountID) {
 
-        public long AddAccount(string name, long bankId, Gender gender)
+            Account acc = GetAccount(bankId, accountID);
+            return acc.Password;
+
+        }
+        public long AddAccount(string name, long bankId, Gender gender,string hashedPassword)
         {
             Account acc = new Account
             {
@@ -37,8 +44,9 @@ namespace SharpBank.Services
                 Gender = gender,
                 AccountId = GenerateId(bankId),
                 BankId = bankId,
-                Balance = 0m,
+                Balance = new Money<decimal>(0m,Currency.INR),
                 Status = Status.Active,
+                Password = hashedPassword,
                 Transactions = new List<Transaction>()
             };
             bankService.GetBank(bankId).Accounts.Add(acc);
@@ -62,10 +70,14 @@ namespace SharpBank.Services
         {
             return bankService.GetBank(bankId).Accounts.SingleOrDefault(a=>a.AccountId == accountId); 
         }
-        public void UpdateBalance(long bankId,long accountId,decimal balance)
+        public void UpdateBalance(long bankId,long accountId,Wallet<decimal> wallet)
         {
             Account acc = GetAccount(bankId, accountId);
-            acc.Balance = balance;
+            acc.Assets = wallet;
+        }
+        public void SetPassword(long bankId, long accountId, string password) {
+            Account acc = GetAccount(bankId, accountId);
+            acc.Password = password;
         }
         public void RemoveAccount(long bankId, long accountId)
         {

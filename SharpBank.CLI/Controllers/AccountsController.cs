@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpBank.Models.Enums;
+using Money;
 
 namespace SharpBank.CLI.Controllers
 {
@@ -30,7 +31,7 @@ namespace SharpBank.CLI.Controllers
                 string password = inputs.GetPassword();
                 Gender gender = inputs.GetGender();
                 
-                id= accountService.AddAccount(name,bankId,gender);
+                id= accountService.AddAccount(name,bankId,gender,password.GetHashCode().ToString());
             }
             catch (AccountIdException e)
             {
@@ -62,7 +63,7 @@ namespace SharpBank.CLI.Controllers
             }
             return null;
         }
-        public decimal GetBalance(long bankId,long accountId)
+        public Wallet<decimal> GetBalance(long bankId,long accountId)
         {
             try
             {
@@ -71,7 +72,7 @@ namespace SharpBank.CLI.Controllers
                 {
                     throw new AccountIdException();
                 }
-                return acc.Balance;
+                return acc.Assets;
             }
             catch (AccountIdException e)
             {
@@ -82,7 +83,7 @@ namespace SharpBank.CLI.Controllers
             {
                 Console.WriteLine("Internal Error");
             }
-            return -1m;
+            return null;
         }
         public List<Transaction> GetTransactionHistory(long bankId, long accountId)
         {
@@ -95,6 +96,20 @@ namespace SharpBank.CLI.Controllers
             catch (Exception)
             {
                 Console.WriteLine("Internal Error");
+            }
+            return null;
+        }
+        public string GetHashedPassword(long bankId, long accountId)
+        {
+            try
+            {
+                string hashedPassword = accountService.GetHashedPassword(bankId, accountId);
+                return hashedPassword;
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Not Found Account");
             }
             return null;
         }
