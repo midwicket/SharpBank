@@ -75,7 +75,9 @@ namespace SharpBank.CLI
                             break;
                         case LoginOptions.Login:
                             userAccountId = inputs.GetAccountId();
-                            string userPassword = inputs.GetPassword();
+                            string hashedPassword = accountsController.GetHashedPassword(userBankId,userAccountId);
+                            string userPassword = inputs.GetPassword(hashedPassword);
+
                             currentMenu++;
                             break;
                         case LoginOptions.Back:

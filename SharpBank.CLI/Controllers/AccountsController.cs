@@ -31,7 +31,7 @@ namespace SharpBank.CLI.Controllers
                 string password = inputs.GetPassword();
                 Gender gender = inputs.GetGender();
                 
-                id= accountService.AddAccount(name,bankId,gender);
+                id= accountService.AddAccount(name,bankId,gender,password.GetHashCode().ToString());
             }
             catch (AccountIdException e)
             {
@@ -96,6 +96,20 @@ namespace SharpBank.CLI.Controllers
             catch (Exception)
             {
                 Console.WriteLine("Internal Error");
+            }
+            return null;
+        }
+        public string GetHashedPassword(long bankId, long accountId)
+        {
+            try
+            {
+                string hashedPassword = accountService.GetHashedPassword(bankId, accountId);
+                return hashedPassword;
+            }
+            catch (Exception)
+            {
+
+                Console.WriteLine("Not Found Account");
             }
             return null;
         }

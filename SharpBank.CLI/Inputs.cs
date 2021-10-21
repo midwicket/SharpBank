@@ -9,7 +9,7 @@ using Money;
 
 namespace SharpBank.CLI
 {
-    public   class Inputs
+    public class Inputs
     {
         public long GetAccountId()
         {
@@ -36,7 +36,22 @@ namespace SharpBank.CLI
                new TextPrompt<string>("Enter [green] password [/]")
                .PromptStyle("red")
                .Secret()
-                );
+               );
+
+            return password;
+        }
+        public string GetPassword(string hashedPassword)
+        {
+            string password = AnsiConsole.Prompt(
+               new TextPrompt<string>("Enter [green] password [/]")
+               .PromptStyle("red")
+               .Secret()
+               .Validate(p =>
+               {
+                   return p.GetHashCode().ToString() == hashedPassword ? ValidationResult.Success() : ValidationResult.Error("Wrong Password");
+
+               }));
+                
             return password;
         }
         public string GetName()
