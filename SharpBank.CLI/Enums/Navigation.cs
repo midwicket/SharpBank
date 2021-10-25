@@ -9,8 +9,12 @@ namespace SharpBank.CLI.Enums
     public enum Navigation
     {
         HomePage,
-        Login,
+        AuthenticationOperations,
         CreateAccount,
-        Transaction,
+        Login,
+        Transfer,
+        Deposit,
+        Withdraw,
+        AccountOperations
     }
 }

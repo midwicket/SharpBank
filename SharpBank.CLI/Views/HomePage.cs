@@ -8,7 +8,7 @@ using Spectre.Console;
 
 namespace SharpBank.CLI.Views
 {
-    class HomePage
+    class HomePage:IPage
     {
         private readonly Menu menu;
 
@@ -17,15 +17,17 @@ namespace SharpBank.CLI.Views
             this.menu = menu;
         }
 
-        public string Prompt() {
+        public string Selection { get; set; }
+
+        public Navigation Prompt() {
 
             AnsiConsole.Write(new Rule("[red]SharpBank[/]"));
-            string option = AnsiConsole.Prompt(menu.BankMenu());
-            if (option == "Exit")
+            Selection = AnsiConsole.Prompt(menu.BankMenu());
+            if (Selection == "Exit")
             {
                 Environment.Exit(0);
             }
-            return option;
+            return Navigation.HomePage;
         }
 
     }

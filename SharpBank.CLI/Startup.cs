@@ -41,9 +41,9 @@ namespace SharpBank.CLI
         }
 
 
-        public void LoadControllers(ref BanksController banksController, ref AccountsController accountsController, ref TransactionsController transactionsController, Inputs inputs) {
-            banksController = new BanksController(bankService, inputs);
-            accountsController = new AccountsController(accountService, inputs);
+        public void LoadControllers(ref BanksController banksController, ref AccountsController accountsController, ref TransactionsController transactionsController) {
+            banksController = new BanksController(bankService);
+            accountsController = new AccountsController(accountService);
             transactionsController = new TransactionsController(transactionService);
         }
 

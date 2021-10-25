@@ -9,9 +9,9 @@ using Money;
 
 namespace SharpBank.CLI
 {
-    public class Inputs
+    public static class Inputs
     {
-        public long GetAccountId()
+        public static long GetAccountId()
         {
             int id = AnsiConsole.Prompt<int>(
                 new TextPrompt<int>("Enter Account ID")
@@ -30,7 +30,7 @@ namespace SharpBank.CLI
                 );
             return id;
         }
-        public string GetPassword()
+        public static string GetPassword()
         {
             string password = AnsiConsole.Prompt(
                new TextPrompt<string>("Enter [green] password [/]")
@@ -40,7 +40,7 @@ namespace SharpBank.CLI
 
             return password;
         }
-        public string GetPassword(string hashedPassword)
+        public static string GetPassword(string hashedPassword)
         {
             string password = AnsiConsole.Prompt(
                new TextPrompt<string>("Enter [green] password [/]")
@@ -54,12 +54,12 @@ namespace SharpBank.CLI
                 
             return password;
         }
-        public string GetName()
+        public static string GetName()
         {
             var option = AnsiConsole.Ask<string>("Please Enter your Name");
             return option;
         }
-        public Gender GetGender()
+        public static Gender GetGender()
         {
             var option = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
@@ -69,7 +69,7 @@ namespace SharpBank.CLI
             Enum.TryParse(option,out Gender gender);
             return gender;
         }
-        public int GetSelection()
+        public static int GetSelection()
         {
             try
             {
@@ -84,7 +84,7 @@ namespace SharpBank.CLI
             //Goback
             return -1;
         }
-        public Currency GetCurrency() {
+        public static Currency GetCurrency() {
             SelectionPrompt<Currency> selectionPrompt = new SelectionPrompt<Currency>().Title("Select Currency");
             IEnumerable<Currency> currencies = (Currency[])Enum.GetValues(typeof(Currency));
 
@@ -96,14 +96,14 @@ namespace SharpBank.CLI
             return option;
         }
 
-        public Money<decimal> GetAmount(Currency currency)
+        public static Money<decimal> GetAmount(Currency currency)
         {
 
             Console.WriteLine("Please Enter The Amount :");
             return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),currency);
         }
 
-        public   List<long> GetRecipient()
+        public static List<long> GetRecipient()
         {
             List<long> res = new List<long>();
             Console.WriteLine("Please Enter Recipient BankId");

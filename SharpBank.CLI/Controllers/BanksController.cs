@@ -14,12 +14,10 @@ namespace SharpBank.CLI.Controllers
      class BanksController
     {
         private readonly BankService bankService;
-        private readonly Inputs inputs;
 
-        public BanksController(BankService bankService,Inputs inputs)
+        public BanksController(BankService bankService)
         {
             this.bankService = bankService;
-            this.inputs = inputs;
         }
 
         public long CreateBank(string v) {

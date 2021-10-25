@@ -15,21 +15,19 @@ namespace SharpBank.CLI.Controllers
     class AccountsController
     {
         private readonly AccountService accountService;
-        private readonly Inputs inputs;
 
-        public AccountsController(AccountService accountService,Inputs inputs)
+        public AccountsController(AccountService accountService)
         {
             this.accountService = accountService;
-            this.inputs = inputs;
         }
         public long CreateAccount(long bankId)
         {
             long id = 0;
             try
             {
-                string name = inputs.GetName();
-                string password = inputs.GetPassword();
-                Gender gender = inputs.GetGender();
+                string name = Inputs.GetName();
+                string password = Inputs.GetPassword();
+                Gender gender = Inputs.GetGender();
                 
                 id= accountService.AddAccount(name,bankId,gender,password.GetHashCode().ToString());
             }
