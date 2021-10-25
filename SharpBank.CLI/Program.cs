@@ -8,12 +8,15 @@ using Spectre.Console;
 using System.Globalization;
 using Money;
 using SharpBank.Models.Enums;
+using System.Threading.Tasks;
+using System.Net.Http;
+using SharpBank.CLI.Services;
 
 namespace SharpBank.CLI
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
 
@@ -29,8 +32,13 @@ namespace SharpBank.CLI
             AccountsController accountsController = new AccountsController(accountService,inputs);
             TransactionsController transactionsController = new TransactionsController(transactionService);
 
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("https://openexchangerates.org");
+            ExchangeRatesService exchangeRates = new ExchangeRatesService(client);
+            var result = await exchangeRates.GetExchangeRates();
+            foreach(var kvpair in result.Rates)AnsiConsole.WriteLine(kvpair.Key + " " +kvpair.Value);
 
-            CurrencyConverterService currencyConverterService = new CurrencyConverterService();
+            CurrencyConverterService currencyConverterService = new CurrencyConverterService(result.Rates);
 
             //SEED
 
