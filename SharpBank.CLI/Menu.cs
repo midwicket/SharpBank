@@ -11,7 +11,14 @@ namespace SharpBank.CLI
 {
      class  Menu
     {
-        public SelectionPrompt<string> BankMenu(Datastore datastore)
+        private readonly Datastore datastore;
+
+        public Menu(Datastore datastore)
+        {
+            this.datastore = datastore;
+        }
+
+        public SelectionPrompt<string> BankMenu()
         {
             SelectionPrompt<string> bankMenuPrompt = new SelectionPrompt<string>()
                 .Title("Select [green]Bank[/] to perform operations")

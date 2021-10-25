@@ -11,62 +11,25 @@ using SharpBank.Models.Enums;
 using System.Threading.Tasks;
 using System.Net.Http;
 using SharpBank.CLI.Services;
+using SharpBank.CLI.Views;
 
 namespace SharpBank.CLI
 {
     class Program
     {
+
         static async Task Main(string[] args)
         {
 
-
-            Inputs inputs = new Inputs();
-            Datastore datastore = new Datastore();
-            
-            BankService bankService = new BankService(datastore);
-            AccountService accountService = new AccountService(bankService);
-            TransactionService transactionService = new TransactionService(accountService);
-
-
-            BanksController banksController = new BanksController(bankService,inputs);
-            AccountsController accountsController = new AccountsController(accountService,inputs);
-            TransactionsController transactionsController = new TransactionsController(transactionService);
-
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri("https://openexchangerates.org");
-            ExchangeRatesService exchangeRates = new ExchangeRatesService(client);
-            var result = await exchangeRates.GetExchangeRates();
-            foreach(var kvpair in result.Rates)AnsiConsole.WriteLine(kvpair.Key + " " +kvpair.Value);
-
-            CurrencyConverterService currencyConverterService = new CurrencyConverterService(result.Rates);
-
-            //SEED
-
-
-            banksController.CreateBank("Yaxis");
-            banksController.CreateBank("YesBI");
-            banksController.CreateBank("FDHC");
-            banksController.CreateBank("YCYCY");
-            
-            
-
-
-            Menu menu = new Menu();
-
-
+            await Initialize();
             int currentMenu = 0;
             string bankName = "";
             long userBankId = 0;
             long userAccountId = 0;
             while (true) { 
                 if (currentMenu == 0) {
-                    AnsiConsole.Write(new Rule("[red]SharpBank[/]"));
-                    bankName = AnsiConsole.Prompt(menu.BankMenu(datastore));
-                    if (bankName == "Exit")
-                    {
-                        Environment.Exit(0);
-                    }
-                    userBankId = banksController.GetBankByName(bankName).BankId;
+                    HomePage homepage = new HomePage(menu);
+                    userBankId = banksController.GetBankByName(homepage.Prompt()).BankId;
                     currentMenu++;
                 }
                 if (currentMenu == 1) {
@@ -169,6 +132,33 @@ namespace SharpBank.CLI
                 }
        
             }
+
+        }
+        private static BanksController banksController;
+        private static AccountsController accountsController;
+        private static TransactionsController transactionsController;
+        private static CurrencyConverterService currencyConverterService;
+        private static Menu menu;
+        private static Inputs inputs;
+
+        static async Task Initialize()
+        {
+            Startup startup = new Startup();
+            inputs = new Inputs();
+            startup.LoadControllers(ref banksController, ref accountsController, ref transactionsController, inputs);
+            LoadBanks();
+            startup.LoadMenus(ref menu);
+
+            IDictionary<string, decimal> exchangeRates = await startup.GetExchangeRates();
+            currencyConverterService = new CurrencyConverterService(exchangeRates);
+        }
+        static void LoadBanks()
+        {
+
+            banksController.CreateBank("Yaxis");
+            banksController.CreateBank("YesBI");
+            banksController.CreateBank("FDHC");
+            banksController.CreateBank("YCYCY");
 
         }
 

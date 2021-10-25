@@ -95,12 +95,14 @@ namespace SharpBank.CLI
                 );
             return option;
         }
+
         public Money<decimal> GetAmount(Currency currency)
         {
 
             Console.WriteLine("Please Enter The Amount :");
             return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),currency);
         }
+
         public   List<long> GetRecipient()
         {
             List<long> res = new List<long>();
