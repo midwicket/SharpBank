@@ -36,8 +36,8 @@ namespace SharpBank.Services
         }
         public long AddTransaction(TransactionType transactionType,long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
         {
-            accountService.UpdateBalance(sourceBankId,sourceAccountId, accountService.GetAccount(sourceBankId, sourceAccountId).Balance - amount);
-            accountService.UpdateBalance(destinationBankId, destinationAccountId, accountService.GetAccount(destinationBankId, destinationAccountId).Balance + amount);
+            accountService.UpdateBalance(sourceBankId,sourceAccountId,-amount);
+            accountService.UpdateBalance(destinationBankId, destinationAccountId,amount);
 
             Transaction transaction = new Transaction
             {

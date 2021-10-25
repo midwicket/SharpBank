@@ -15,8 +15,7 @@ namespace SharpBank.Models
         public string Name { get; set; }
         public long BankId { get; set; }
         public string Password { get; set; }
-        public Money<decimal> Balance { get; set; }
-        public Wallet<decimal> Assets { get; set; }
+        public Funds Balance { get; set; }
         public Gender Gender { get; set; }
         public Status Status { get; set; }
         public ICollection<Transaction> Transactions { get; set; }

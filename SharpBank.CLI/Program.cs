@@ -88,9 +88,9 @@ namespace SharpBank.CLI
                             break;
                         case UserOptions.Balance:
                             {
-                                var wallet = accountsController.GetBalance(userBankId, userAccountId);
+                                Funds balance = accountsController.GetBalance(userBankId, userAccountId);
                                 currency = inputs.GetCurrency();
-                                Money<decimal> money = wallet.Evaluate(currencyConverterService, currency);
+                                Money<decimal> money = balance.Evaluate(currencyConverterService, currency);
                                 AnsiConsole.WriteLine("Your Balance is: " + money.Amount + " " + money.Currency);
                                 break;
                             }
