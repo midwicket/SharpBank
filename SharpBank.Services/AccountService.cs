@@ -24,7 +24,7 @@ namespace SharpBank.Services
                 AccountId = 0,
                 BankId = 0,
                 Password = "".GetHashCode().ToString(),
-                Balance = new Money<decimal>(0m,Currency.INR),
+                Balance = new Funds { Wallets=new List<Money<decimal>>() },
                 Status = Status.Active,
                 Transactions = new List<Transaction>()
             };
@@ -44,7 +44,7 @@ namespace SharpBank.Services
                 Gender = gender,
                 AccountId = GenerateId(bankId),
                 BankId = bankId,
-                Balance = new Money<decimal>(0m,Currency.INR),
+                Balance = new Funds { Wallets = new List<Money<decimal>>() },
                 Status = Status.Active,
                 Password = hashedPassword,
                 Transactions = new List<Transaction>()
@@ -70,10 +70,10 @@ namespace SharpBank.Services
         {
             return bankService.GetBank(bankId).Accounts.SingleOrDefault(a=>a.AccountId == accountId); 
         }
-        public void UpdateBalance(long bankId,long accountId,Wallet<decimal> wallet)
+        public void UpdateBalance(long bankId,long accountId,Money<decimal> money)
         {
             Account acc = GetAccount(bankId, accountId);
-            acc.Assets = wallet;
+            acc.Balance += money;
         }
         public void SetPassword(long bankId, long accountId, string password) {
             Account acc = GetAccount(bankId, accountId);
