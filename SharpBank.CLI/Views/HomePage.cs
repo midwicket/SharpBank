@@ -27,7 +27,7 @@ namespace SharpBank.CLI.Views
             {
                 Environment.Exit(0);
             }
-            return Navigation.HomePage;
+            return Navigation.AuthenticationOperations;
         }
 
     }

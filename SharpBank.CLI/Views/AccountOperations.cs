@@ -1,4 +1,5 @@
 ﻿using SharpBank.CLI.Enums;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,72 +10,39 @@ namespace SharpBank.CLI.Views
 {
     class AccountOperations : IPage
     {
+        private readonly Menu menu;
+
         public string Selection { get; set; }
+        public AccountOperations(Menu menu)
+        {
+            this.menu = menu;
+        }
 
         public Navigation Prompt()
         {
             UserOptions option;
             Enum.TryParse(AnsiConsole.Prompt(menu.UserMenu()).Replace(" ", ""), out option);
-            Money<decimal> amount;
-            Currency currency;
-
 
             switch (option)
             {
                 case UserOptions.Deposit:
                     return Navigation.Deposit;
                 case UserOptions.Withdraw:
-                    currency = Inputs.GetCurrency();
-                    amount = Inputs.GetAmount(currency);
-                    transactionsController.Withdraw(userBankId, userAccountId, amount);
-                    break;
+                    return Navigation.Withdraw;
                 case UserOptions.Transfer:
-                    List<long> recp = Inputs.GetRecipient();
-                    currency = Inputs.GetCurrency();
-                    amount = Inputs.GetAmount(currency);
-
-                    transactionsController.Transfer(TransactionType.RTGS, userBankId, userAccountId, recp[0], recp[1], amount);
-                    break;
+                    return Navigation.Transfer;
                 case UserOptions.Balance:
-                    {
-                        Funds balance = accountsController.GetBalance(userBankId, userAccountId);
-                        currency = Inputs.GetCurrency();
-                        Money<decimal> money = balance.Evaluate(currencyConverterService, currency);
-                        AnsiConsole.WriteLine("Your Balance is: " + money.Amount + " " + money.Currency);
-                        break;
-                    }
+                    return Navigation.Balance;
                 case UserOptions.TransactionHistory:
-                    List<Transaction> hist = accountsController.GetTransactionHistory(userBankId, userAccountId);
-
-                    Table table = new Table();
-                    table.Border(TableBorder.Rounded);
-                    table.AddColumns("TransactionId", "Source Bank", "Source Account", " Dest. Bank  ", "Dest. Account", " Amount ", "Timestamp ");
-                    foreach (Transaction t in hist)
-                    {
-                        table.AddRow(
-                            "[red]" + t.TransactionId.ToString("D10") + "[/]",
-                            "[green]" + t.SourceBankId.ToString("D10") + "[/]",
-                            "[green]" + t.SourceAccountId.ToString("D10") + "[/]",
-                            "[yellow]" + t.DestinationBankId.ToString("D10") + "[/]",
-                            "[yellow]" + t.DestinationAccountId.ToString("D10") + "[/]",
-                            //replace with CultureInfo.CurrentCulture
-                            "[green]" + t.Amount.Amount + " " + t.Amount.Currency.ToString() + "[/]",
-                            "[yellow]" + t.On.ToString() + "[/]"
-                            );
-
-                    }
-                    AnsiConsole.Write(table);
-                    break;
+                    return Navigation.TransactionHistory;
                 case UserOptions.Back:
-                    currentMenu--;
+                    return Navigation.AuthenticationOperations;
                     break;
                 case UserOptions.Exit:
-                    currentMenu = 0;
                     Environment.Exit(0);
-                    break;
+                    return Navigation.HomePage;
                 default:
-                    AnsiConsole.WriteLine("Invalid ma");
-                    break;
+                    return Navigation.AccountOperations;
 
             }
         }

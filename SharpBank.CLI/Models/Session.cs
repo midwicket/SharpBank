@@ -1,6 +1,7 @@
 ﻿using SharpBank.CLI.Controllers;
 using SharpBank.CLI.Enums;
 using SharpBank.CLI.Views;
+using SharpBank.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace SharpBank.CLI.Models
         private readonly BanksController banksController;
         private readonly AccountsController accountsController;
         private readonly TransactionsController transactionsController;
+        private readonly CurrencyConverterService currencyConverterService;
         private readonly Menu menu;
 
         
@@ -50,18 +52,60 @@ namespace SharpBank.CLI.Models
                     break;
 
                 case Navigation.AuthenticationOperations:
-                    AuthenticationOperations authenticationOperations = new AuthenticationOperations();
 
+                    AuthenticationOperations authenticationOperations = new AuthenticationOperations(banksController,BankId,menu);
+                    CurrentPage = authenticationOperations.Prompt();
+
+                    break;
+
+                case Navigation.AccountOperations:
+
+                    AccountOperations accountOperations = new AccountOperations(this.menu);
+                    CurrentPage = accountOperations.Prompt();
+
+                    break;
+
+                case Navigation.Deposit:
+
+                    Deposit deposit = new Deposit(transactionsController,this.BankId,this.AccountId);
+                    CurrentPage = deposit.Prompt();
+                    break;
+
+                case Navigation.Withdraw:
+                    Withdraw withdraw = new Withdraw(transactionsController, this.BankId, this.AccountId);
+                    CurrentPage = withdraw.Prompt();
+                    break;
+
+                case Navigation.Transfer:
+                    Transfer transfer = new Transfer(transactionsController, this.BankId, this.AccountId);
+                    CurrentPage = transfer.Prompt();
+                    break;
+
+                case Navigation.TransactionHistory:
+                    TransactionHistory transactionHistory = new TransactionHistory(accountsController, transactionsController, BankId, AccountId);
+                    CurrentPage = transactionHistory.Prompt();
+                    break;
+
+                case Navigation.Balance:
+                    Balance balance = new Balance(accountsController, BankId, AccountId,currencyConverterService);
+                    CurrentPage = balance.Prompt();
                     break;
 
             }
         
         }
-        public Session(BanksController banksController,AccountsController accountsController,TransactionsController transactionsController)
+        public Session(
+            BanksController banksController,
+            AccountsController accountsController,
+            TransactionsController transactionsController,
+            CurrencyConverterService currencyConverterService,
+            Menu menu)
         {
             this.banksController = banksController;
             this.accountsController = accountsController;
             this.transactionsController = transactionsController;
+            this.currencyConverterService = currencyConverterService;
+            this.menu = menu;
         }
 
         protected virtual void Dispose(bool disposing)

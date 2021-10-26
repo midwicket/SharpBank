@@ -15,6 +15,8 @@ namespace SharpBank.CLI.Enums
         Transfer,
         Deposit,
         Withdraw,
-        AccountOperations
+        AccountOperations,
+        Balance,
+        TransactionHistory
     }
 }

@@ -30,7 +30,7 @@ namespace SharpBank.CLI.Views
             string hashedPassword = accountsController.GetHashedPassword(bankId,AccountId);
             string AccountPassword = Inputs.GetPassword(hashedPassword);
 
-            return Navigation.AuthenticationOperations;
+            return Navigation.AccountOperations;
         }
     }
 }

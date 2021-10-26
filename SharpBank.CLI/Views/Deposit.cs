@@ -14,6 +14,7 @@ namespace SharpBank.CLI.Views
         private readonly TransactionsController transactionsController;
         private readonly long bankId;
         private readonly long accountId;
+        public long TransactionId { get; set; }
 
         public string Selection { get ; set ; }
 
@@ -28,7 +29,7 @@ namespace SharpBank.CLI.Views
         {
             Currency currency = Inputs.GetCurrency();
             Money<decimal> amount = Inputs.GetAmount(currency);
-            transactionsController.Deposit(bankId, accountId, amount);
+            TransactionId=transactionsController.Deposit(bankId, accountId, amount);
             return Navigation.AccountOperations;
         }
     }

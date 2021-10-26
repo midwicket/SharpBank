@@ -23,19 +23,10 @@ namespace SharpBank.CLI
         {
 
             await Initialize();
-            using Session session = new Session();
-            while (true) {
-
-
-                if (currentMenu == 1) {
-                    
-                }
-                if (currentMenu == 2) {
-                    menu.UserMenu();
-                   
-
-                }
-       
+            using Session session = new Session(banksController,accountsController,transactionsController,currencyConverterService,menu);
+            while (true)
+            {
+                session.Display();
             }
 
         }
@@ -48,7 +39,7 @@ namespace SharpBank.CLI
         static async Task Initialize()
         {
             Startup startup = new Startup();
-            startup.LoadControllers(ref banksController, ref accountsController, ref transactionsController, Inputs);
+            startup.LoadControllers(ref banksController, ref accountsController, ref transactionsController);
             LoadBanks();
             startup.LoadMenus(ref menu);
 
