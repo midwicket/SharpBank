@@ -74,5 +74,9 @@ namespace SharpBank.CLI.Controllers
             }
             return id;
         }
+        public Money<decimal> GetDeductible(TransactionType transactionType, long sourceBankId, Money<decimal> amount)
+        {
+            return transactionService.GetDeductible(transactionType, sourceBankId, amount);
+        }
     }
 }

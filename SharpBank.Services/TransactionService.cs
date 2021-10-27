@@ -13,10 +13,12 @@ namespace SharpBank.Services
     public class TransactionService
     {
         private readonly AccountService accountService;
+        private readonly BankService bankService;
 
-        public TransactionService(AccountService accountService)
+        public TransactionService(AccountService accountService,BankService bankService)
         {
             this.accountService = accountService;
+            this.bankService = bankService;
         }
         public long GenerateId(long sourceBankId, long sourceAccountId, long destinationBankId,long destinationAccountId)
         {
@@ -34,9 +36,12 @@ namespace SharpBank.Services
                     (destinationAccount.Transactions.SingleOrDefault(t => t.TransactionId == Id)!=null));
             return Id;
         }
-        public long AddTransaction(TransactionType transactionType,long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
+        public long AddTransaction(TransactionType transactionType, long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
         {
-            accountService.UpdateBalance(sourceBankId,sourceAccountId,-amount);
+
+            Money<decimal> deductible = GetDeductible(transactionType, sourceBankId, amount);
+
+            accountService.UpdateBalance(sourceBankId,sourceAccountId,-deductible);
             accountService.UpdateBalance(destinationBankId, destinationAccountId,amount);
 
             Transaction transaction = new Transaction
@@ -46,6 +51,7 @@ namespace SharpBank.Services
                 DestinationAccountId = destinationAccountId,
                 SourceBankId = sourceBankId,
                 DestinationBankId = destinationBankId,
+                Type=transactionType,
                 Amount = amount,
                 On=DateTime.Now
             };
@@ -53,6 +59,10 @@ namespace SharpBank.Services
             accountService.GetAccount(destinationBankId, destinationAccountId).Transactions.Add(transaction);
 
             return transaction.TransactionId;
+        }
+        public Money<decimal> GetDeductible(TransactionType transactionType, long sourceBankId, Money<decimal> amount)
+        {
+            return new Money<decimal>(amount.Amount * (1 + 0.01m * bankService.GetTransactionChargePercentage(sourceBankId, transactionType)), amount.Currency);
         }
 
         public Transaction GetTransaction(long bankId, long accountId, long TransactionId)

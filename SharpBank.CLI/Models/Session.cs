@@ -77,7 +77,7 @@ namespace SharpBank.CLI.Models
                     break;
 
                 case Navigation.Transfer:
-                    Transfer transfer = new Transfer(transactionsController, this.BankId, this.AccountId);
+                    Transfer transfer = new Transfer(transactionsController, this.BankId, this.AccountId,this.currencyConverterService);
                     CurrentPage = transfer.Prompt();
                     break;
 

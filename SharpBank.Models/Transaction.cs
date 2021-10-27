@@ -19,10 +19,6 @@ namespace SharpBank.Models
         public Money<decimal> Amount { get; set; }
         public DateTime On { get; set; }
         public TransactionType Type { get; set; }
-        public override string ToString()
-        {
-            string res = $"  {TransactionId.ToString("D10")}  | {SourceBankId.ToString("D10")}  |   {SourceAccountId.ToString("D10")}   |   {DestinationBankId.ToString("D10")}  |  {DestinationAccountId.ToString("D10")}   | {Amount.ToString()} | {On}";
-            return res;
-        }
+
     }
 }

@@ -33,7 +33,7 @@ namespace SharpBank.CLI.Views
 
             Table table = new Table();
             table.Border(TableBorder.Rounded);
-            table.AddColumns("[yellow]TransactionId[/]", "[green]Source Bank[/]", "[green]Source Account[/]", "[red]Dest. Bank[/]", "[red]Dest. Account[/]", "[green]Amount[/]", "[yellow]Timestamp[/]");
+            table.AddColumns("[yellow]TransactionId[/]", "[green]Source Bank[/]", "[green]Source Account[/]", "[red]Dest. Bank[/]", "[red]Dest. Account[/]", "[grey]Transaction Type[/]", "[green]Amount[/]", "[yellow]Timestamp[/]");
             foreach (Transaction t in hist)
             {
                 table.AddRow(
@@ -42,6 +42,7 @@ namespace SharpBank.CLI.Views
                     t.SourceAccountId.ToString("D10"),
                     t.DestinationBankId.ToString("D10"),
                     t.DestinationAccountId.ToString("D10"),
+                    t.Type.ToString(),
                     "[green]" + t.Amount.Amount + " " + t.Amount.Currency.ToString() + "[/]",
                     t.On.ToString()
                     );

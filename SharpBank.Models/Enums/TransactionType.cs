@@ -10,6 +10,7 @@ namespace SharpBank.Models.Enums
     {
         RTGS,
         IMPS,
+        NEFT,
         CASH
     }
 }
