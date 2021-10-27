@@ -55,7 +55,7 @@ namespace SharpBank.CLI
 
             bankService = new BankService(datastore);
             accountService = new AccountService(bankService);
-            transactionService = new TransactionService(accountService);
+            transactionService = new TransactionService(accountService,bankService);
 
         }
     }

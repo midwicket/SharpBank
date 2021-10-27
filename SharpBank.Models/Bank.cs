@@ -19,6 +19,12 @@ namespace SharpBank.Models
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
 
+
+        public decimal IMPS { get; set; }
+        public decimal RTGS { get; set; }
+        public decimal NEFT { get; set; }
+
+
         public decimal GetRate(TransactionType transactionType) => transactionType switch
         {
             TransactionType.RTGS => 2m,

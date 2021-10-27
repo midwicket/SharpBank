@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpBank.Models;
+using SharpBank.Models.Enums;
 using SharpBank.Models.Exceptions;
 
 namespace SharpBank.Services
@@ -36,6 +37,9 @@ namespace SharpBank.Services
             {
                 BankId = GenerateId(),
                 Name = name,
+                RTGS=2m,
+                IMPS=5m,
+                NEFT=1m,
                 CreatedOn = DateTime.Now,
                 CreatedBy = "Admin",
                 UpdatedOn = DateTime.Now,
@@ -52,6 +56,17 @@ namespace SharpBank.Services
         }
         public Bank GetBankByName(string name) {
             return datastore.Banks.FirstOrDefault(b => b.Name == name);
+        }
+        public decimal GetTransactionChargePercentage(long bankId, TransactionType transactionType) {
+            return transactionType switch
+            {
+                TransactionType.CASH => 0,
+                TransactionType.IMPS => GetBank(bankId).IMPS,
+                TransactionType.RTGS => GetBank(bankId).IMPS,
+                TransactionType.NEFT => GetBank(bankId).NEFT,
+                _ => 0
+
+            };
         }
     }
 }

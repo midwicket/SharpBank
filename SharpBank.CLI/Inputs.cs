@@ -11,6 +11,16 @@ namespace SharpBank.CLI
 {
     public static class Inputs
     {
+        public static bool AreYouSure(string message)
+        {
+            var response = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                .Title($"[red]{message}[/]")
+                .AddChoices("Yes", "No")
+                );
+            return response == "Yes";
+        }
+
         public static long GetAccountId()
         {
             int id = AnsiConsole.Prompt<int>(
@@ -30,6 +40,22 @@ namespace SharpBank.CLI
                 );
             return id;
         }
+
+        public static TransactionType GetTransactionType(decimal amountINR)
+        {
+            var selectionPrompt = new SelectionPrompt<string>()
+                .Title("Select [green]Transaction Type[/]")
+                .AddChoices("IMPS", "NEFT");
+
+            if (amountINR > 100000) {
+                selectionPrompt.AddChoice("RTGS");
+            }
+
+            var option = AnsiConsole.Prompt(selectionPrompt);
+            Enum.TryParse(option, out TransactionType transactionType);
+            return transactionType;
+        }
+
         public static string GetPassword()
         {
             string password = AnsiConsole.Prompt(
@@ -69,21 +95,7 @@ namespace SharpBank.CLI
             Enum.TryParse(option,out Gender gender);
             return gender;
         }
-        public static int GetSelection()
-        {
-            try
-            {
-                Console.WriteLine("Please Enter Your Selection :");
 
-                return Convert.ToInt32(Console.ReadLine());
-            }
-            catch(FormatException e)
-            {
-                Console.WriteLine("Invalid Selection");
-            }
-            //Goback
-            return -1;
-        }
         public static Currency GetCurrency() {
             SelectionPrompt<Currency> selectionPrompt = new SelectionPrompt<Currency>().Title("Select Currency");
             IEnumerable<Currency> currencies = (Currency[])Enum.GetValues(typeof(Currency));
@@ -99,16 +111,16 @@ namespace SharpBank.CLI
         public static Money<decimal> GetAmount(Currency currency)
         {
 
-            Console.WriteLine("Please Enter The Amount :");
+            AnsiConsole.WriteLine("Please Enter The Amount :");
             return new Money<decimal>(Convert.ToDecimal(Console.ReadLine()),currency);
         }
 
         public static List<long> GetRecipient()
         {
             List<long> res = new List<long>();
-            Console.WriteLine("Please Enter Recipient BankId");
+            AnsiConsole.WriteLine("Please Enter Recipient BankId");
             res.Add(Convert.ToInt64(Console.ReadLine()));
-            Console.WriteLine("Please Enter Recipient Account number");
+            AnsiConsole.WriteLine("Please Enter Recipient Account number");
             res.Add(Convert.ToInt64(Console.ReadLine()));
             return res;
         }
