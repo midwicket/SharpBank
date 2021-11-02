@@ -39,7 +39,7 @@ namespace SharpBank.Services
         public long AddTransaction(TransactionType transactionType, long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
         {
 
-            Money<decimal> deductible = GetDeductible(transactionType, sourceBankId, amount);
+            Money<decimal> deductible = GetDeductible(transactionType, sourceBankId,destinationBankId, amount);
 
             accountService.UpdateBalance(sourceBankId,sourceAccountId,-deductible);
             accountService.UpdateBalance(destinationBankId, destinationAccountId,amount);
@@ -60,9 +60,11 @@ namespace SharpBank.Services
 
             return transaction.TransactionId;
         }
-        public Money<decimal> GetDeductible(TransactionType transactionType, long sourceBankId, Money<decimal> amount)
+        public Money<decimal> GetDeductible(TransactionType transactionType, long sourceBankId,long destinationBankId, Money<decimal> amount)
         {
-            return new Money<decimal>(amount.Amount * (1 + 0.01m * bankService.GetTransactionChargePercentage(sourceBankId, transactionType)), amount.Currency);
+            var transactionCharges = bankService.GetTransactionCharge(sourceBankId, transactionType);
+            decimal chargePercentage = (sourceBankId == destinationBankId) ? transactionCharges.IntraBank : transactionCharges.InterBank;
+            return new Money<decimal>(amount.Amount * (1 + 0.01m * chargePercentage ), amount.Currency);
         }
 
         public Transaction GetTransaction(long bankId, long accountId, long TransactionId)

@@ -16,7 +16,11 @@ namespace SharpBank.Services
         public BankService(Datastore datastore)
         {
             this.datastore = datastore;
-            datastore.Banks.Add(new Bank { BankId = 0, Name="Reserve Bank",Accounts = new List<Account> { } } );
+            datastore.Banks.Add(new Bank { BankId = 0, Name="Reserve Bank",
+                RTGS = new TransactionCharge { IntraBank = 0m, InterBank = 2 },
+                IMPS = new TransactionCharge { IntraBank = 5m, InterBank = 6 },
+                NEFT = new TransactionCharge { IntraBank = 0.5m, InterBank = 1 },
+                Accounts = new List<Account> { } } );
         }
         public long GenerateId()
         {
@@ -37,9 +41,9 @@ namespace SharpBank.Services
             {
                 BankId = GenerateId(),
                 Name = name,
-                RTGS=2m,
-                IMPS=5m,
-                NEFT=1m,
+                RTGS = new TransactionCharge { IntraBank = 0m, InterBank = 2 },
+                IMPS = new TransactionCharge { IntraBank = 5m, InterBank = 6 },
+                NEFT = new TransactionCharge { IntraBank = 0.5m, InterBank = 1 },
                 CreatedOn = DateTime.Now,
                 CreatedBy = "Admin",
                 UpdatedOn = DateTime.Now,
@@ -57,14 +61,13 @@ namespace SharpBank.Services
         public Bank GetBankByName(string name) {
             return datastore.Banks.FirstOrDefault(b => b.Name == name);
         }
-        public decimal GetTransactionChargePercentage(long bankId, TransactionType transactionType) {
+        public TransactionCharge GetTransactionCharge(long bankId, TransactionType transactionType) {
             return transactionType switch
             {
-                TransactionType.CASH => 0,
                 TransactionType.IMPS => GetBank(bankId).IMPS,
                 TransactionType.RTGS => GetBank(bankId).IMPS,
                 TransactionType.NEFT => GetBank(bankId).NEFT,
-                _ => 0
+                _ => new TransactionCharge { InterBank=0m,IntraBank=0m}
 
             };
         }

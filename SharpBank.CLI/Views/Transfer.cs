@@ -36,7 +36,7 @@ namespace SharpBank.CLI.Views
             var convertedValue = currencyConverterService.Convert(amount.Amount, amount.Currency, Money.Currency.INR);
             var transactionType = Inputs.GetTransactionType(convertedValue);
 
-            var deductible = transactionsController.GetDeductible(transactionType,bankId,amount);
+            var deductible = transactionsController.GetDeductible(transactionType,bankId,recp[0],amount);
 
             bool areYouSure = Inputs.AreYouSure($"This will deduct a total of {deductible.Amount} {deductible.Currency} from your account [yellow]This includes bank mandated charges for {transactionType.ToString()}[/]."+Environment.NewLine+"[green]Proceed?[/]");
 

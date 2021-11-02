@@ -20,16 +20,17 @@ namespace SharpBank.Models
         public string UpdatedBy { get; set; }
 
 
-        public decimal IMPS { get; set; }
-        public decimal RTGS { get; set; }
-        public decimal NEFT { get; set; }
+        public TransactionCharge IMPS { get; set; }
+        public TransactionCharge RTGS { get; set; }
+        public TransactionCharge NEFT { get; set; }
 
 
-        public decimal GetRate(TransactionType transactionType) => transactionType switch
+        public TransactionCharge GetTransactionCharge(TransactionType transactionType) => transactionType switch
         {
-            TransactionType.RTGS => 2m,
-            TransactionType.IMPS => 5m,
-            _ => 0m
+            TransactionType.RTGS => this.RTGS,
+            TransactionType.IMPS => this.IMPS,
+            TransactionType.NEFT => this.NEFT,
+            _ => new TransactionCharge { InterBank=0m,IntraBank=0m }
         };
 
         public ICollection<Account> Accounts { get; set; }
