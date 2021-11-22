@@ -36,6 +36,10 @@ namespace SharpBank.Services
             return acc.Password;
 
         }
+        public void UpdateStatus(long bankId, long accountId, Status status) {
+            Account acc = GetAccount(bankId, accountId);
+            acc.Status = status;
+        }
         public long AddAccount(string name, long bankId, Gender gender,string hashedPassword)
         {
             Account acc = new Account
@@ -83,6 +87,7 @@ namespace SharpBank.Services
         {
             bankService.GetBank(bankId).Accounts.Remove(GetAccount(bankId, accountId));
         }
+
 
     }
 }
