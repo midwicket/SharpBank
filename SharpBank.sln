@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpBank.CLI", "SharpBank.CLI\SharpBank.CLI.csproj", "{7C6AF0E7-6483-4F01-A27C-2CC2294141A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBank.Models", "SharpBank.Models\SharpBank.Models.csproj", "{DAA0F9EB-65A8-4A9C-B90E-1EAEFD374CA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpBank.Models", "SharpBank.Models\SharpBank.Models.csproj", "{DAA0F9EB-65A8-4A9C-B90E-1EAEFD374CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBank.Services", "SharpBank.Services\SharpBank.Services.csproj", "{F649CC9C-88D8-4274-9884-9FC4379C26A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpBank.Services", "SharpBank.Services\SharpBank.Services.csproj", "{F649CC9C-88D8-4274-9884-9FC4379C26A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpBank.API", "SharpBank.API\SharpBank.API.csproj", "{D98E9715-F8EE-4B85-85FA-29DC91402CC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{F649CC9C-88D8-4274-9884-9FC4379C26A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F649CC9C-88D8-4274-9884-9FC4379C26A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F649CC9C-88D8-4274-9884-9FC4379C26A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D98E9715-F8EE-4B85-85FA-29DC91402CC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D98E9715-F8EE-4B85-85FA-29DC91402CC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D98E9715-F8EE-4B85-85FA-29DC91402CC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D98E9715-F8EE-4B85-85FA-29DC91402CC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
