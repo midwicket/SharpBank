@@ -105,8 +105,18 @@ namespace SharpBank.API.Controllers
 
         // PUT api/<BanksController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Bank bank)
         {
+            var sql = $"UPDATE `bank` SET `name` = '{bank.name}' WHERE `bank`.`id` = {id}";
+            using (MySqlConnection conn = new MySqlConnection("server=127.0.0.1;uid=asp;pwd=asp;database=sharpbank;pooling = false; convert zero datetime=True"))
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.CommandText = sql;
+                cmd.Connection = conn;
+                cmd.ExecuteNonQuery();
+            }
+            return Ok();
         }
 
         // DELETE api/<BanksController>/5
