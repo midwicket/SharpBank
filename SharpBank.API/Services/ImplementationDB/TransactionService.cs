@@ -1,33 +1,56 @@
 ﻿using SharpBank.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using SharpBank.Models;
 
 namespace SharpBank.API.Services.ImplementationDB
 {
     public class TransactionService : ITransactionService
     {
+        private readonly AppDbContext appDbContext;
+
+        public TransactionService(AppDbContext appDbContext)
+        {
+            this.appDbContext = appDbContext;
+        }
+
         public Transaction Create(Transaction transaction)
         {
-            throw new NotImplementedException();
+            appDbContext.Transactions.Add(transaction);
+            appDbContext.SaveChanges();
+            return appDbContext.Transactions.FirstOrDefault(t=>t.TransactionId==transaction.TransactionId);
+            
         }
 
         public Transaction Delete(Guid Id)
         {
-            throw new NotImplementedException();
+            Transaction transaction = appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == Id);
+            appDbContext.Transactions.Remove(transaction);
+            appDbContext.SaveChanges();
+            return transaction; 
         }
 
         public IEnumerable<Transaction> GetTransactions()
         {
-            throw new NotImplementedException();
+            //ISSUE THERE WILL COME BACK
+
+            return appDbContext.Transactions
+                .Include(t=>t.SourceAccount)
+                .Include(t=>t.DestinationAccount)
+                .Include(t=>t.Money)
+                .ToList();
         }
 
-        public Transaction GetTransactionsById(Guid Id)
+        public Transaction GetTransactionById(Guid Id)
         {
-            throw new NotImplementedException();
+            var t = appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == Id);
+            return t;
         }
 
         public Transaction Update(Transaction transaction)
         {
-            throw new NotImplementedException();
+            appDbContext.Transactions.Attach(transaction);
+            appDbContext.SaveChanges();
+            return appDbContext.Transactions.FirstOrDefault(t=>t.TransactionId==transaction.TransactionId);
         }
     }
 }

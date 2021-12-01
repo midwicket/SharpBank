@@ -32,11 +32,17 @@ namespace SharpBank.API
                 .HasForeignKey(t => t.DestinationAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Transaction>()
+                .HasOne<Models.Money>(t => t.Money);
+
             modelBuilder.Entity<TransactionCharge>()
                 .HasOne(tc => tc.Bank)
                 .WithMany(b => b.Charges)
                 .HasForeignKey(c => c.BankId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
             Bank b1 = new Bank
             {
                 BankId = Guid.NewGuid(),
@@ -50,20 +56,61 @@ namespace SharpBank.API
                 b1
                 );
             Funds f1 = new Funds { Id = Guid.NewGuid() };
+            Funds f2 = new Funds { Id = Guid.NewGuid() };
             modelBuilder.Entity<Funds>().HasData(
-               f1
+               f1,f2
                );
-            modelBuilder.Entity<Account>().HasData(
-                new Account { 
+
+            Models.Money m1 = new Models.Money
+            {
+                Id = Guid.NewGuid(),
+                Currency = Money.Currency.INR,
+                Amount = 10m,
+                FundsId=f1.Id
+            };
+            Models.Money m2 = new Models.Money
+            {
+                Id = Guid.NewGuid(),
+                Currency = Money.Currency.INR,
+                Amount = 10m,
+                FundsId=f2.Id
+            };
+            modelBuilder.Entity<Models.Money>().HasData(m1, m2);
+            Account a1 = new Account
+            {
                 AccountId = Guid.NewGuid(),
-                BankId=b1.BankId,
-                Name="Testendra Testy",
+                BankId = b1.BankId,
+                Name = "Testendra Testy",
                 FundsId = f1.Id,
                 Password = "password",
                 Gender = Models.Enums.Gender.Male,
                 Status = Models.Enums.Status.Active
-                }
+            };
+            Account a2 = new Account
+            {
+                AccountId = Guid.NewGuid(),
+                BankId = b1.BankId,
+                Name = "Wastendar Wastee",
+                FundsId = f1.Id,
+                Password = "password",
+                Gender = Models.Enums.Gender.Male,
+                Status = Models.Enums.Status.Active
+            };
+            modelBuilder.Entity<Account>().HasData(a1,a2);
+            Transaction t1 = new Transaction { 
+                TransactionId = Guid.NewGuid(),
+                DestinationAccountId = a2.AccountId,
+                SourceAccountId=a1.AccountId,
+                MoneyId = m2.Id,
+                On = DateTime.Now,
+                Type = Models.Enums.TransactionType.RTGS
+            
+            };
+
+            modelBuilder.Entity<Transaction>().HasData(
+                t1
                 );
+
         }
     }
 }

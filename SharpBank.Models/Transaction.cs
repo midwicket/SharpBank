@@ -18,7 +18,8 @@ namespace SharpBank.Models
         public Account SourceAccount { get; set; }
         public Guid DestinationAccountId { get; set; }
         public Account DestinationAccount { get; set; }
-        public Money Amount { get; set; }
+        public Guid MoneyId { get; set; }
+        public Money Money { get; set; }
         public DateTime On { get; set; }
         public TransactionType Type { get; set; }
 

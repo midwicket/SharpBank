@@ -37,7 +37,12 @@ namespace SharpBank.API.Services.ImplementationDB
 
         public IEnumerable<Account> GetAccounts()
         {
-            return appDbContext.Accounts.Include(a=>a.Funds).ToList();
+            return appDbContext.Accounts
+                .Include(a=>a.Funds)
+                .ThenInclude(f=>f.Wallets)
+                .Include(a=>a.CreditTransactions)
+                .Include(a=>a.DebitTransactions)
+                .ToList();
         }
 
         public Account Update(Account account)
