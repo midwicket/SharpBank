@@ -10,7 +10,7 @@ namespace SharpBank.API.Services.ImplementationDB
             throw new NotImplementedException();
         }
 
-        public Transaction Delete(long Id)
+        public Transaction Delete(Guid Id)
         {
             throw new NotImplementedException();
         }
@@ -20,7 +20,7 @@ namespace SharpBank.API.Services.ImplementationDB
             throw new NotImplementedException();
         }
 
-        public Transaction GetTransactionsById(long Id)
+        public Transaction GetTransactionsById(Guid Id)
         {
             throw new NotImplementedException();
         }

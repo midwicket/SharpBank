@@ -1,4 +1,5 @@
 ﻿using SharpBank.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using SharpBank.Models;
 
 namespace SharpBank.API.Services.ImplementationDB
@@ -39,12 +40,12 @@ namespace SharpBank.API.Services.ImplementationDB
 
         public IEnumerable<Bank> GetBanks()
         {
-            return appDbContext.Banks.ToList();
+            return appDbContext.Banks.Include(b=>b.Accounts).ToList();
         }
 
         public Bank Update(Bank bank)
         {
-            appDbContext.Attach(bank);
+            appDbContext.Banks.Attach(bank);
             appDbContext.SaveChanges();
             return bank;
         }

@@ -11,7 +11,7 @@ builder.Services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(
 
 builder.Services.AddControllers().AddJsonOptions(opt=>opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 builder.Services.AddScoped<IBankService, BankService>();
-//builder.Services.AddScoped<IAccountService, BankService>();
+builder.Services.AddScoped<IAccountService,AccountService>();
 //builder.Services.AddScoped<ITransactionService, BankService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
