@@ -13,12 +13,10 @@ namespace SharpBank.Models
     public class Transaction
     {
         [Key]
-        public long TransactionId { get; set; }
-        public long SourceBankId { get; set; }
-        public long DestinationBankId { get; set; }
-        public long SourceAccountId { get; set; }
+        public Guid TransactionId { get; set; }
+        public Guid SourceAccountId { get; set; }
         public Account SourceAccount { get; set; }
-        public long DestinationAccountId { get; set; }
+        public Guid DestinationAccountId { get; set; }
         public Account DestinationAccount { get; set; }
         public Money Amount { get; set; }
         public DateTime On { get; set; }

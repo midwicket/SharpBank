@@ -37,7 +37,33 @@ namespace SharpBank.API
                 .WithMany(b => b.Charges)
                 .HasForeignKey(c => c.BankId)
                 .OnDelete(DeleteBehavior.Cascade);
-
+            Bank b1 = new Bank
+            {
+                BankId = Guid.NewGuid(),
+                Name = "Test Bank",
+                CreatedBy = "Cat",
+                CreatedOn = DateTime.Now,
+                UpdatedBy = "Cat",
+                UpdatedOn = DateTime.Now
+            };
+            modelBuilder.Entity<Bank>().HasData(
+                b1
+                );
+            Funds f1 = new Funds { Id = Guid.NewGuid() };
+            modelBuilder.Entity<Funds>().HasData(
+               f1
+               );
+            modelBuilder.Entity<Account>().HasData(
+                new Account { 
+                AccountId = Guid.NewGuid(),
+                BankId=b1.BankId,
+                Name="Testendra Testy",
+                FundsId = f1.Id,
+                Password = "password",
+                Gender = Models.Enums.Gender.Male,
+                Status = Models.Enums.Status.Active
+                }
+                );
         }
     }
 }

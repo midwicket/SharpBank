@@ -14,12 +14,13 @@ namespace SharpBank.Models
     public class Account
     {
         [Key]
-        public long AccountId { get; set; }
+        public Guid AccountId { get; set; }
         public string Name { get; set; }
-        public long BankId { get; set; }
+        public Guid BankId { get; set; }
         public Bank Bank { get; set; }
         public string Password { get; set; }
-        public Funds Balance { get; set; }
+        public Guid FundsId { get; set; }
+        public Funds Funds { get; set; }
         public Gender Gender { get; set; }
         public Status Status { get; set; }
 

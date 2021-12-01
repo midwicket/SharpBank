@@ -12,8 +12,8 @@ using SharpBank.API;
 namespace SharpBank.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211130134410_FK")]
-    partial class FK
+    [Migration("20211201043344_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,17 +26,15 @@ namespace SharpBank.API.Migrations
 
             modelBuilder.Entity("SharpBank.Models.Account", b =>
                 {
-                    b.Property<long>("AccountId")
+                    b.Property<Guid>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AccountId"), 1L, 1);
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<long?>("BalanceId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("BankId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FundsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
@@ -52,20 +50,30 @@ namespace SharpBank.API.Migrations
 
                     b.HasKey("AccountId");
 
-                    b.HasIndex("BalanceId");
-
                     b.HasIndex("BankId");
 
+                    b.HasIndex("FundsId");
+
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountId = new Guid("00dcc120-bfd5-4cb9-9710-3dbcbcc5d0aa"),
+                            BankId = new Guid("339186ff-4c10-48c4-8930-3ebd03c611b8"),
+                            FundsId = new Guid("54a11d72-0ed4-4a59-8d5c-1cfe5f0452c9"),
+                            Gender = 0,
+                            Name = "Testendra Testy",
+                            Password = "password",
+                            Status = 0
+                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Bank", b =>
                 {
-                    b.Property<long>("BankId")
+                    b.Property<Guid>("BankId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("BankId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -88,19 +96,34 @@ namespace SharpBank.API.Migrations
                     b.HasKey("BankId");
 
                     b.ToTable("Banks");
+
+                    b.HasData(
+                        new
+                        {
+                            BankId = new Guid("339186ff-4c10-48c4-8930-3ebd03c611b8"),
+                            CreatedBy = "Cat",
+                            CreatedOn = new DateTime(2021, 12, 1, 10, 3, 43, 934, DateTimeKind.Local).AddTicks(1027),
+                            Name = "Test Bank",
+                            UpdatedBy = "Cat",
+                            UpdatedOn = new DateTime(2021, 12, 1, 10, 3, 43, 934, DateTimeKind.Local).AddTicks(1042)
+                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Funds", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.ToTable("FundsTable");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("54a11d72-0ed4-4a59-8d5c-1cfe5f0452c9")
+                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Money", b =>
@@ -115,8 +138,8 @@ namespace SharpBank.API.Migrations
                     b.Property<int>("Currency")
                         .HasColumnType("int");
 
-                    b.Property<long?>("FundsId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("FundsId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -127,29 +150,21 @@ namespace SharpBank.API.Migrations
 
             modelBuilder.Entity("SharpBank.Models.Transaction", b =>
                 {
-                    b.Property<long>("TransactionId")
+                    b.Property<Guid>("TransactionId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TransactionId"), 1L, 1);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("AmountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("DestinationAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("DestinationBankId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("DestinationAccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("On")
                         .HasColumnType("datetime2");
 
-                    b.Property<long>("SourceAccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SourceBankId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("SourceAccountId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
@@ -167,14 +182,12 @@ namespace SharpBank.API.Migrations
 
             modelBuilder.Entity("SharpBank.Models.TransactionCharge", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<long>("BankId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("BankId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("IMPS")
                         .HasColumnType("decimal(18,2)");
@@ -197,26 +210,30 @@ namespace SharpBank.API.Migrations
 
             modelBuilder.Entity("SharpBank.Models.Account", b =>
                 {
-                    b.HasOne("SharpBank.Models.Funds", "Balance")
-                        .WithMany()
-                        .HasForeignKey("BalanceId");
-
                     b.HasOne("SharpBank.Models.Bank", "Bank")
                         .WithMany("Accounts")
                         .HasForeignKey("BankId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Balance");
+                    b.HasOne("SharpBank.Models.Funds", "Funds")
+                        .WithMany()
+                        .HasForeignKey("FundsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bank");
+
+                    b.Navigation("Funds");
                 });
 
             modelBuilder.Entity("SharpBank.Models.Money", b =>
                 {
                     b.HasOne("SharpBank.Models.Funds", "Funds")
                         .WithMany("Wallets")
-                        .HasForeignKey("FundsId");
+                        .HasForeignKey("FundsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Funds");
                 });

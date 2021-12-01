@@ -11,7 +11,7 @@ namespace SharpBank.Models
     [Table("FundsTable")]
     public class Funds : Wallet<decimal>
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public List<Money> Wallets { get; set; }
 

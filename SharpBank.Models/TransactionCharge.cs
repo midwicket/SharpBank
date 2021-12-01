@@ -10,13 +10,13 @@ namespace SharpBank.Models
     public class TransactionCharge
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; }
         public decimal RTGS { get; set; }
         public decimal IMPS { get; set; }
         public decimal NEFT { get; set; }
-        public long BankId { get; set; }
+        public Guid BankId { get; set; }
         public Bank Bank { get; set; }
     }
 }

@@ -17,6 +17,8 @@ namespace SharpBank.Models
 
         public decimal Amount { get; set; }
 
+        public Guid FundsId { get; set; }
+
         //Tells to which funds does this money belong to [InverseProperty]
         public Funds Funds { get; set; }
     }

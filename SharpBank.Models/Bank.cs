@@ -13,7 +13,7 @@ namespace SharpBank.Models
     public class Bank
     {
         [Key]
-        public long BankId { get; set; }
+        public Guid BankId { get; set; }
         public string Name { get; set; }
 
         public string Logo { get; set; }
