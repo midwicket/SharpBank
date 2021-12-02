@@ -3,19 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SharpBank.API;
+using SharpBank.Data;
 
 #nullable disable
 
-namespace SharpBank.API.Migrations
+namespace SharpBank.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211201062935_TransactionSeed")]
-    partial class TransactionSeed
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +57,9 @@ namespace SharpBank.API.Migrations
                     b.HasData(
                         new
                         {
-                            AccountId = new Guid("9b3258a5-8f13-4083-83fe-8c7d24d449fe"),
-                            BankId = new Guid("9c113548-4554-43fd-92df-8c447d5ed0ea"),
-                            FundsId = new Guid("9c099d25-7498-4ab1-b2c4-354d91aa843f"),
+                            AccountId = new Guid("7bb44932-4c59-4828-92fa-e6c518c8b6f4"),
+                            BankId = new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"),
+                            FundsId = new Guid("007f4f8b-212c-44b9-b462-012db41098fb"),
                             Gender = 0,
                             Name = "Testendra Testy",
                             Password = "password",
@@ -69,9 +67,9 @@ namespace SharpBank.API.Migrations
                         },
                         new
                         {
-                            AccountId = new Guid("7129a9b2-cd11-4230-af43-2e8e15aafc2c"),
-                            BankId = new Guid("9c113548-4554-43fd-92df-8c447d5ed0ea"),
-                            FundsId = new Guid("9c099d25-7498-4ab1-b2c4-354d91aa843f"),
+                            AccountId = new Guid("936f2e5e-f8ce-46dc-958f-e6c3c2c57a3d"),
+                            BankId = new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"),
+                            FundsId = new Guid("007f4f8b-212c-44b9-b462-012db41098fb"),
                             Gender = 0,
                             Name = "Wastendar Wastee",
                             Password = "password",
@@ -110,12 +108,12 @@ namespace SharpBank.API.Migrations
                     b.HasData(
                         new
                         {
-                            BankId = new Guid("9c113548-4554-43fd-92df-8c447d5ed0ea"),
+                            BankId = new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"),
                             CreatedBy = "Cat",
-                            CreatedOn = new DateTime(2021, 12, 1, 11, 59, 34, 405, DateTimeKind.Local).AddTicks(3429),
+                            CreatedOn = new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6278),
                             Name = "Test Bank",
                             UpdatedBy = "Cat",
-                            UpdatedOn = new DateTime(2021, 12, 1, 11, 59, 34, 405, DateTimeKind.Local).AddTicks(3450)
+                            UpdatedOn = new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6295)
                         });
                 });
 
@@ -132,11 +130,11 @@ namespace SharpBank.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("9c099d25-7498-4ab1-b2c4-354d91aa843f")
+                            Id = new Guid("007f4f8b-212c-44b9-b462-012db41098fb")
                         },
                         new
                         {
-                            Id = new Guid("3c3052f2-fb88-4bce-80a4-5033095aabb9")
+                            Id = new Guid("77b06774-20c6-4c08-a1f2-149130d16f00")
                         });
                 });
 
@@ -164,17 +162,17 @@ namespace SharpBank.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("164c9af8-8e27-4cd7-9144-2b7eb5ea43ba"),
+                            Id = new Guid("2c226da7-41b0-477b-8dcb-eea6bc6217df"),
                             Amount = 10m,
                             Currency = 356,
-                            FundsId = new Guid("9c099d25-7498-4ab1-b2c4-354d91aa843f")
+                            FundsId = new Guid("007f4f8b-212c-44b9-b462-012db41098fb")
                         },
                         new
                         {
-                            Id = new Guid("48981f5a-c936-40a6-9357-de710bf0e02e"),
+                            Id = new Guid("487077d3-85d7-4f76-9f2e-65fc2199402d"),
                             Amount = 10m,
                             Currency = 356,
-                            FundsId = new Guid("3c3052f2-fb88-4bce-80a4-5033095aabb9")
+                            FundsId = new Guid("77b06774-20c6-4c08-a1f2-149130d16f00")
                         });
                 });
 
@@ -212,11 +210,11 @@ namespace SharpBank.API.Migrations
                     b.HasData(
                         new
                         {
-                            TransactionId = new Guid("99405c69-cdf2-4a31-b3fa-55338de3caad"),
-                            DestinationAccountId = new Guid("7129a9b2-cd11-4230-af43-2e8e15aafc2c"),
-                            MoneyId = new Guid("48981f5a-c936-40a6-9357-de710bf0e02e"),
-                            On = new DateTime(2021, 12, 1, 11, 59, 34, 405, DateTimeKind.Local).AddTicks(3892),
-                            SourceAccountId = new Guid("9b3258a5-8f13-4083-83fe-8c7d24d449fe"),
+                            TransactionId = new Guid("fc4c1667-d161-4e45-a95f-d02c0c5d57ee"),
+                            DestinationAccountId = new Guid("936f2e5e-f8ce-46dc-958f-e6c3c2c57a3d"),
+                            MoneyId = new Guid("487077d3-85d7-4f76-9f2e-65fc2199402d"),
+                            On = new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6743),
+                            SourceAccountId = new Guid("7bb44932-4c59-4828-92fa-e6c518c8b6f4"),
                             Type = 0
                         });
                 });

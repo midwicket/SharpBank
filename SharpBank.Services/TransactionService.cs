@@ -1,8 +1,14 @@
-﻿using SharpBank.API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SharpBank.Data;
 using SharpBank.Models;
+using SharpBank.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SharpBank.API.Services.ImplementationDB
+namespace SharpBank.Services
 {
     public class TransactionService : ITransactionService
     {
@@ -17,8 +23,8 @@ namespace SharpBank.API.Services.ImplementationDB
         {
             appDbContext.Transactions.Add(transaction);
             appDbContext.SaveChanges();
-            return appDbContext.Transactions.FirstOrDefault(t=>t.TransactionId==transaction.TransactionId);
-            
+            return appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
+
         }
 
         public Transaction Delete(Guid Id)
@@ -26,7 +32,7 @@ namespace SharpBank.API.Services.ImplementationDB
             Transaction transaction = appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == Id);
             appDbContext.Transactions.Remove(transaction);
             appDbContext.SaveChanges();
-            return transaction; 
+            return transaction;
         }
 
         public IEnumerable<Transaction> GetTransactions()
@@ -34,9 +40,9 @@ namespace SharpBank.API.Services.ImplementationDB
             //ISSUE THERE WILL COME BACK
 
             return appDbContext.Transactions
-                .Include(t=>t.SourceAccount)
-                .Include(t=>t.DestinationAccount)
-                .Include(t=>t.Money)
+                .Include(t => t.SourceAccount)
+                .Include(t => t.DestinationAccount)
+                .Include(t => t.Money)
                 .ToList();
         }
 
@@ -50,7 +56,8 @@ namespace SharpBank.API.Services.ImplementationDB
         {
             appDbContext.Transactions.Attach(transaction);
             appDbContext.SaveChanges();
-            return appDbContext.Transactions.FirstOrDefault(t=>t.TransactionId==transaction.TransactionId);
+            return appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
         }
     }
+
 }

@@ -1,11 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SharpBank.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SharpBank.API
+namespace SharpBank.Data
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 
         }
@@ -19,12 +24,12 @@ namespace SharpBank.API
             modelBuilder.Entity<Bank>().HasMany<Account>(b => b.Accounts).WithOne(a => a.Bank);
 
 
-            modelBuilder.Entity<Funds>().HasMany<SharpBank.Models.Money>(f => f.Wallets).WithOne(w=>w.Funds);
+            modelBuilder.Entity<Funds>().HasMany<SharpBank.Models.Money>(f => f.Wallets).WithOne(w => w.Funds);
 
             modelBuilder.Entity<Transaction>()
-                .HasOne<Account>(t=>t.SourceAccount)
-                .WithMany(a=>a.DebitTransactions)
-                .HasForeignKey(t=>t.SourceAccountId)
+                .HasOne<Account>(t => t.SourceAccount)
+                .WithMany(a => a.DebitTransactions)
+                .HasForeignKey(t => t.SourceAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Transaction>()
                 .HasOne<Account>(t => t.DestinationAccount)
@@ -58,7 +63,7 @@ namespace SharpBank.API
             Funds f1 = new Funds { Id = Guid.NewGuid() };
             Funds f2 = new Funds { Id = Guid.NewGuid() };
             modelBuilder.Entity<Funds>().HasData(
-               f1,f2
+               f1, f2
                );
 
             Models.Money m1 = new Models.Money
@@ -66,14 +71,14 @@ namespace SharpBank.API
                 Id = Guid.NewGuid(),
                 Currency = Money.Currency.INR,
                 Amount = 10m,
-                FundsId=f1.Id
+                FundsId = f1.Id
             };
             Models.Money m2 = new Models.Money
             {
                 Id = Guid.NewGuid(),
                 Currency = Money.Currency.INR,
                 Amount = 10m,
-                FundsId=f2.Id
+                FundsId = f2.Id
             };
             modelBuilder.Entity<Models.Money>().HasData(m1, m2);
             Account a1 = new Account
@@ -96,15 +101,15 @@ namespace SharpBank.API
                 Gender = Models.Enums.Gender.Male,
                 Status = Models.Enums.Status.Active
             };
-            modelBuilder.Entity<Account>().HasData(a1,a2);
-            Transaction t1 = new Transaction { 
+            modelBuilder.Entity<Account>().HasData(a1, a2);
+            Transaction t1 = new Transaction
+            {
                 TransactionId = Guid.NewGuid(),
                 DestinationAccountId = a2.AccountId,
-                SourceAccountId=a1.AccountId,
+                SourceAccountId = a1.AccountId,
                 MoneyId = m2.Id,
                 On = DateTime.Now,
                 Type = Models.Enums.TransactionType.RTGS
-            
             };
 
             modelBuilder.Entity<Transaction>().HasData(

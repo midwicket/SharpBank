@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace SharpBank.API.Migrations
+namespace SharpBank.Data.Migrations
 {
     public partial class Initial : Migration
     {
@@ -115,7 +115,7 @@ namespace SharpBank.API.Migrations
                     TransactionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SourceAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DestinationAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AmountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    MoneyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     On = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false)
                 },
@@ -135,26 +135,50 @@ namespace SharpBank.API.Migrations
                         principalColumn: "AccountId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Transactions_Money_AmountId",
-                        column: x => x.AmountId,
+                        name: "FK_Transactions_Money_MoneyId",
+                        column: x => x.MoneyId,
                         principalTable: "Money",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
                 table: "Banks",
                 columns: new[] { "BankId", "CreatedBy", "CreatedOn", "Logo", "Name", "UpdatedBy", "UpdatedOn" },
-                values: new object[] { new Guid("339186ff-4c10-48c4-8930-3ebd03c611b8"), "Cat", new DateTime(2021, 12, 1, 10, 3, 43, 934, DateTimeKind.Local).AddTicks(1027), null, "Test Bank", "Cat", new DateTime(2021, 12, 1, 10, 3, 43, 934, DateTimeKind.Local).AddTicks(1042) });
+                values: new object[] { new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"), "Cat", new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6278), null, "Test Bank", "Cat", new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6295) });
 
             migrationBuilder.InsertData(
                 table: "FundsTable",
                 column: "Id",
-                value: new Guid("54a11d72-0ed4-4a59-8d5c-1cfe5f0452c9"));
+                value: new Guid("007f4f8b-212c-44b9-b462-012db41098fb"));
+
+            migrationBuilder.InsertData(
+                table: "FundsTable",
+                column: "Id",
+                value: new Guid("77b06774-20c6-4c08-a1f2-149130d16f00"));
 
             migrationBuilder.InsertData(
                 table: "Accounts",
                 columns: new[] { "AccountId", "BankId", "FundsId", "Gender", "Name", "Password", "Status" },
-                values: new object[] { new Guid("00dcc120-bfd5-4cb9-9710-3dbcbcc5d0aa"), new Guid("339186ff-4c10-48c4-8930-3ebd03c611b8"), new Guid("54a11d72-0ed4-4a59-8d5c-1cfe5f0452c9"), 0, "Testendra Testy", "password", 0 });
+                values: new object[,]
+                {
+                    { new Guid("7bb44932-4c59-4828-92fa-e6c518c8b6f4"), new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"), new Guid("007f4f8b-212c-44b9-b462-012db41098fb"), 0, "Testendra Testy", "password", 0 },
+                    { new Guid("936f2e5e-f8ce-46dc-958f-e6c3c2c57a3d"), new Guid("70ebb090-ee75-474e-8f6d-4811619be6f1"), new Guid("007f4f8b-212c-44b9-b462-012db41098fb"), 0, "Wastendar Wastee", "password", 0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Money",
+                columns: new[] { "Id", "Amount", "Currency", "FundsId" },
+                values: new object[,]
+                {
+                    { new Guid("2c226da7-41b0-477b-8dcb-eea6bc6217df"), 10m, 356, new Guid("007f4f8b-212c-44b9-b462-012db41098fb") },
+                    { new Guid("487077d3-85d7-4f76-9f2e-65fc2199402d"), 10m, 356, new Guid("77b06774-20c6-4c08-a1f2-149130d16f00") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Transactions",
+                columns: new[] { "TransactionId", "DestinationAccountId", "MoneyId", "On", "SourceAccountId", "Type" },
+                values: new object[] { new Guid("fc4c1667-d161-4e45-a95f-d02c0c5d57ee"), new Guid("936f2e5e-f8ce-46dc-958f-e6c3c2c57a3d"), new Guid("487077d3-85d7-4f76-9f2e-65fc2199402d"), new DateTime(2021, 12, 2, 19, 23, 24, 593, DateTimeKind.Local).AddTicks(6743), new Guid("7bb44932-4c59-4828-92fa-e6c518c8b6f4"), 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_BankId",
@@ -177,14 +201,14 @@ namespace SharpBank.API.Migrations
                 column: "BankId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_AmountId",
-                table: "Transactions",
-                column: "AmountId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_DestinationAccountId",
                 table: "Transactions",
                 column: "DestinationAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_MoneyId",
+                table: "Transactions",
+                column: "MoneyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_SourceAccountId",

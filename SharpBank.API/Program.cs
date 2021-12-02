@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SharpBank.API;
-using SharpBank.API.Services.ImplementationDB;
-using SharpBank.API.Services.Interfaces;
+using SharpBank.Data;
+using SharpBank.Services;
+using SharpBank.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

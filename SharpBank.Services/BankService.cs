@@ -1,8 +1,14 @@
-﻿using SharpBank.API.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using SharpBank.Data;
 using SharpBank.Models;
+using SharpBank.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SharpBank.API.Services.ImplementationDB
+namespace SharpBank.Services
 {
     public class BankService : IBankService
     {
@@ -28,19 +34,19 @@ namespace SharpBank.API.Services.ImplementationDB
 
         public Bank GetBankById(Guid Id)
         {
-            Bank bank = appDbContext.Banks.SingleOrDefault(b=>(b.BankId== Id));
+            Bank bank = appDbContext.Banks.SingleOrDefault(b => (b.BankId == Id));
             return bank;
         }
 
         public Bank GetBankByName(string bankName)
         {
-            Bank bank = appDbContext.Banks.FirstOrDefault(b=>(b.Name== bankName));
+            Bank bank = appDbContext.Banks.FirstOrDefault(b => (b.Name == bankName));
             return bank;
         }
 
         public IEnumerable<Bank> GetBanks()
         {
-            return appDbContext.Banks.Include(b=>b.Accounts).ToList();
+            return appDbContext.Banks.Include(b => b.Accounts).ToList();
         }
 
         public Bank Update(Bank bank)
@@ -50,4 +56,5 @@ namespace SharpBank.API.Services.ImplementationDB
             return bank;
         }
     }
+
 }

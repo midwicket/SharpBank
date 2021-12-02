@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace SharpBank.Services.Interfaces
 {
-    interface IBankService
+    public interface IBankService
     {
         public IEnumerable<Bank> GetBanks();
-        public Bank GetBankById(long Id);
+        public Bank GetBankById(Guid Id);
         public Bank GetBankByName(string bankName);
 
         public Bank Create(Bank bank);
         public Bank Update(Bank bank);
-        public void Delete(long Id);
+        public void Delete(Guid Id);
     }
 }
