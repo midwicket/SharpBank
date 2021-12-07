@@ -25,11 +25,28 @@ namespace SharpBank.Services
             return bank;
         }
 
-        public void Delete(Guid Id)
+        public TransactionCharge CreateTransactionCharge(Bank bank,decimal rtgs, decimal imps, decimal neft, string name)
+        {
+            TransactionCharge transactionCharge = new TransactionCharge
+            {
+                Id = Guid.NewGuid(),
+                Name = name,
+                RTGS = rtgs,
+                NEFT = neft,
+                IMPS = imps,
+                BankId = bank.BankId
+
+            };
+            appDbContext.Charges.Add(transactionCharge);
+            return transactionCharge;
+        }
+
+        public Bank Delete(Guid Id)
         {
             Bank bank = appDbContext.Banks.SingleOrDefault(b => (b.BankId == Id));
             appDbContext.Banks.Remove(bank);
             appDbContext.SaveChanges();
+            return bank;
         }
 
         public Bank GetBankById(Guid Id)
@@ -49,11 +66,28 @@ namespace SharpBank.Services
             return appDbContext.Banks.Include(b => b.Accounts).ToList();
         }
 
+        public TransactionCharge GetTransactionChargeByName(Guid bankId, string Name)
+        {
+            TransactionCharge transactionCharge = appDbContext.Charges.SingleOrDefault(tc => ((tc.Name==Name)&&(tc.BankId==bankId)));
+            return transactionCharge;
+        }
+
         public Bank Update(Bank bank)
         {
             appDbContext.Banks.Attach(bank);
             appDbContext.SaveChanges();
             return bank;
+        }
+
+        public TransactionCharge UpdateTransactionCharge(Bank bank, decimal rtgs, decimal imps, decimal neft, string name)
+        {
+            TransactionCharge transactionCharge = appDbContext.Charges.SingleOrDefault(tc => ((tc.Name == name) && (tc.BankId == bank.BankId)));
+            transactionCharge.RTGS = rtgs;
+            transactionCharge.NEFT = neft;
+            transactionCharge.IMPS = imps;
+            appDbContext.Charges.Attach(transactionCharge);
+            appDbContext.SaveChanges();
+            return transactionCharge;
         }
     }
 
