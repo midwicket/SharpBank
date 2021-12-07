@@ -12,6 +12,8 @@ namespace SharpBank.Services.Interfaces
         public IEnumerable<Transaction> GetTransactions();
         public Transaction GetTransactionById(Guid Id);
 
+        public Models.Money RegisterMoney(Models.Money money);
+        public Guid GetFundsId(Guid accountId);
         public Transaction Create(Transaction transaction);
         public Transaction Update(Transaction transaction);
         public Transaction Delete(Guid Id);

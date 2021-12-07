@@ -18,6 +18,7 @@ namespace SharpBank.Data
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Funds> FundsTable { get; set; }
+        public DbSet<Models.Money> MoneyTable { get; set; }
         public DbSet<TransactionCharge> Charges { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +33,7 @@ namespace SharpBank.Data
                 .WithMany(a => a.DebitTransactions)
                 .HasForeignKey(t => t.SourceAccountId)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Transaction>()
                 .HasOne<Account>(t => t.DestinationAccount)
                 .WithMany(a => a.CreditTransactions)

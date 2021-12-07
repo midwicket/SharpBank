@@ -53,28 +53,6 @@ namespace SharpBank.Data.Migrations
                     b.HasIndex("FundsId");
 
                     b.ToTable("Accounts");
-
-                    b.HasData(
-                        new
-                        {
-                            AccountId = new Guid("502237e2-63b3-4645-8a31-decc5a52e379"),
-                            BankId = new Guid("f6f0fd94-bb7e-454e-925c-a0d5f539f813"),
-                            FundsId = new Guid("b97bfc17-6ac5-4428-b855-511b9465d6ab"),
-                            Gender = 0,
-                            Name = "Testendra Testy",
-                            Password = "password",
-                            Status = 0
-                        },
-                        new
-                        {
-                            AccountId = new Guid("ae7b64b2-b309-493e-b4f0-48262a0e6b1c"),
-                            BankId = new Guid("f6f0fd94-bb7e-454e-925c-a0d5f539f813"),
-                            FundsId = new Guid("b97bfc17-6ac5-4428-b855-511b9465d6ab"),
-                            Gender = 0,
-                            Name = "Wastendar Wastee",
-                            Password = "password",
-                            Status = 0
-                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Bank", b =>
@@ -104,17 +82,6 @@ namespace SharpBank.Data.Migrations
                     b.HasKey("BankId");
 
                     b.ToTable("Banks");
-
-                    b.HasData(
-                        new
-                        {
-                            BankId = new Guid("f6f0fd94-bb7e-454e-925c-a0d5f539f813"),
-                            CreatedBy = "Cat",
-                            CreatedOn = new DateTime(2021, 12, 7, 12, 39, 26, 197, DateTimeKind.Local).AddTicks(7992),
-                            Name = "Test Bank",
-                            UpdatedBy = "Cat",
-                            UpdatedOn = new DateTime(2021, 12, 7, 12, 39, 26, 197, DateTimeKind.Local).AddTicks(8020)
-                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Funds", b =>
@@ -126,16 +93,6 @@ namespace SharpBank.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FundsTable");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b97bfc17-6ac5-4428-b855-511b9465d6ab")
-                        },
-                        new
-                        {
-                            Id = new Guid("342f9963-2a24-49d4-9f6d-cabfcfe6ad84")
-                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.Money", b =>
@@ -157,23 +114,7 @@ namespace SharpBank.Data.Migrations
 
                     b.HasIndex("FundsId");
 
-                    b.ToTable("Money");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("25b83c46-2aee-4aa0-be33-0f395456ca9f"),
-                            Amount = 10m,
-                            Currency = 356,
-                            FundsId = new Guid("b97bfc17-6ac5-4428-b855-511b9465d6ab")
-                        },
-                        new
-                        {
-                            Id = new Guid("5552db6d-1b61-445b-bc43-202af5512b83"),
-                            Amount = 10m,
-                            Currency = 356,
-                            FundsId = new Guid("342f9963-2a24-49d4-9f6d-cabfcfe6ad84")
-                        });
+                    b.ToTable("MoneyTable");
                 });
 
             modelBuilder.Entity("SharpBank.Models.Transaction", b =>
@@ -206,17 +147,6 @@ namespace SharpBank.Data.Migrations
                     b.HasIndex("SourceAccountId");
 
                     b.ToTable("Transactions");
-
-                    b.HasData(
-                        new
-                        {
-                            TransactionId = new Guid("2114e135-1fd4-4cb5-b9d1-6a8edc68fb25"),
-                            DestinationAccountId = new Guid("ae7b64b2-b309-493e-b4f0-48262a0e6b1c"),
-                            MoneyId = new Guid("5552db6d-1b61-445b-bc43-202af5512b83"),
-                            On = new DateTime(2021, 12, 7, 12, 39, 26, 197, DateTimeKind.Local).AddTicks(8722),
-                            SourceAccountId = new Guid("502237e2-63b3-4645-8a31-decc5a52e379"),
-                            Type = 0
-                        });
                 });
 
             modelBuilder.Entity("SharpBank.Models.TransactionCharge", b =>

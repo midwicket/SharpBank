@@ -58,6 +58,21 @@ namespace SharpBank.Services
             appDbContext.SaveChanges();
             return appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
         }
+
+        public Guid GetFundsId(Guid accountId)
+        {
+            var account = appDbContext.Accounts.SingleOrDefault(a => a.AccountId == accountId);
+            return account.FundsId;
+        }
+
+        public Models.Money RegisterMoney(Models.Money money)
+        {
+            appDbContext.MoneyTable.Add(money);
+            appDbContext.SaveChanges();
+            var registeredMoney = appDbContext.MoneyTable.SingleOrDefault(m => m.Id == money.Id);
+            return registeredMoney;
+
+        }
     }
 
 }

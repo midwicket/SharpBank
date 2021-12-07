@@ -30,6 +30,13 @@ namespace SharpBank.Services
             return account;
         }
 
+        public Funds CreateFunds(Funds funds)
+        {
+            appDbContext.FundsTable.Add(funds);
+            appDbContext.SaveChanges();
+            return appDbContext.FundsTable.SingleOrDefault(f => f.Id == funds.Id);
+        }
+
         public Account Delete(Guid accountId)
         {
             throw new NotImplementedException();
