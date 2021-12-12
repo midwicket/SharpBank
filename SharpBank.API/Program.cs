@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using SharpBank.API;
 using SharpBank.API.Profiles;
 using SharpBank.Data;
 using SharpBank.Services;
 using SharpBank.Services.Interfaces;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +17,23 @@ builder.Services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddControllers().AddJsonOptions(opt=>opt.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
+
+builder.Services.AddAuthentication(a => {
+    a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(
+    b => {
+        b.RequireHttpsMetadata = false;
+        b.SaveToken = true;
+        b.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = false,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("MirchiBajjiManoharRaoKey")),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+    }
+    );
 
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<IAccountService,AccountService>();
@@ -33,6 +53,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -15,6 +15,7 @@ namespace SharpBank.API.Profiles
             CreateMap<Bank, GetBankDTO>();
             CreateMap<CreateAccountDTO, Account>();
             CreateMap<UpdateAccountDTO, Account>();
+            CreateMap<AuthenticateAccountDTO, Account>();
             CreateMap<Account, GetAccountDTO>();
             CreateMap<CreateTransactionDTO, Transaction>();
             CreateMap<Transaction,GetTransactionDTO>();
