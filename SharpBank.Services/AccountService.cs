@@ -31,7 +31,8 @@ namespace SharpBank.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]{ 
-                    new Claim(ClaimTypes.Name,account.Name)
+                    new Claim(ClaimTypes.Name,account.AccountId.ToString()),
+                    new Claim(ClaimTypes.Role,account.Status.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = 

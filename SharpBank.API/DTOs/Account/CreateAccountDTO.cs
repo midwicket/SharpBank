@@ -13,7 +13,9 @@ namespace SharpBank.API.DTOs.Account
         public string Password { get; set; }
         [Required]
         [Compare("Password",ErrorMessage = "Passwords don't match")]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set;}
+
+        public Status Status { get; set; }
         public Gender Gender { get; set; }
     }
 }

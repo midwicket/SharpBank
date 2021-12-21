@@ -23,6 +23,7 @@ namespace SharpBank.API.Controllers
             this.mapper = mapper;
         }
         // GET: api/<AccountsController>
+        [Authorize(Roles = "Staff")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -52,6 +53,7 @@ namespace SharpBank.API.Controllers
 
 
         // POST api/<AccountsController>
+        [Authorize(Roles = "Staff")]
         [HttpPost("{bankId}")]
         public IActionResult Post(Guid bankId,[FromBody] CreateAccountDTO accountDTO )
         {
@@ -85,6 +87,7 @@ namespace SharpBank.API.Controllers
         }
 
         // DELETE api/<AccountsController>/5
+        [Authorize(Roles = "Staff")]
         [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
