@@ -4,6 +4,7 @@ using SharpBank.Models;
 using AutoMapper;
 using SharpBank.API.DTOs.Transaction;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -23,6 +24,7 @@ namespace SharpBank.API.Controllers
             this.mapper = mapper;
         }
         // GET: api/<TransactionsController>
+        [Authorize(Roles ="Staff")]
         [HttpGet]
         public IActionResult Get()
         {
@@ -50,6 +52,13 @@ namespace SharpBank.API.Controllers
             try
             {
                 if (transactionDTO == null) return BadRequest();
+
+                var claimsidentity = User.Identity as ClaimsIdentity;
+                var idClaim = claimsidentity.FindFirst(ClaimTypes.Name);
+                if (idClaim.Value.ToString() != transactionDTO.SourceAccountId.ToString())
+                {
+                    return Forbid();
+                }
                 Transaction transaction = mapper.Map<Transaction>(transactionDTO);
                 transaction.TransactionId = Guid.NewGuid();
                 Models.Money requiredMoney = new Models.Money { Id=Guid.NewGuid(), Amount = transactionDTO.Amount, Currency = transactionDTO.CurrencyId, FundsId = transactionService.GetFundsId(transaction.DestinationAccountId) };
