@@ -11,6 +11,7 @@ namespace SharpBank.CLI.Enums
         Create = 1,
         Login,
         Back,
-        Exit
+        Exit,
+        Staff
     }
 }

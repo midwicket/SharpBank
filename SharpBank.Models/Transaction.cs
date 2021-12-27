@@ -1,22 +1,25 @@
-﻿using Money;
-using SharpBank.Models.Enums;
+﻿using SharpBank.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SharpBank.Models
 {
+    [Table("Transactions")]
     public class Transaction
     {
-        public long TransactionId { get; set; }
-        public long SourceBankId { get; set; }
-        public long DestinationBankId { get; set; }
-        public long SourceAccountId { get; set; }
-        public long DestinationAccountId { get; set; }
-        public Money<decimal> Amount { get; set; }
+        [Key]
+        public Guid TransactionId { get; set; }
+        public Guid SourceAccountId { get; set; }
+        public Account SourceAccount { get; set; }
+        public Guid DestinationAccountId { get; set; }
+        public Account DestinationAccount { get; set; }
+        public Guid MoneyId { get; set; }
+        public Money Money { get; set; }
         public DateTime On { get; set; }
         public TransactionType Type { get; set; }
 

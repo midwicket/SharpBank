@@ -1,75 +1,78 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using SharpBank.Data;
+using SharpBank.Models;
+using SharpBank.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Money;
-using SharpBank.Models;
-using SharpBank.Models.Enums;
-using SharpBank.Models.Exceptions;
 
 namespace SharpBank.Services
 {
-    public class TransactionService
+    public class TransactionService : ITransactionService
     {
-        private readonly AccountService accountService;
-        private readonly BankService bankService;
+        private readonly AppDbContext appDbContext;
 
-        public TransactionService(AccountService accountService,BankService bankService)
+        public TransactionService(AppDbContext appDbContext)
         {
-            this.accountService = accountService;
-            this.bankService = bankService;
-        }
-        public long GenerateId(long sourceBankId, long sourceAccountId, long destinationBankId,long destinationAccountId)
-        {
-            Random rand = new Random(123);
-            Account sourceAccount = accountService.GetAccount(sourceBankId, sourceAccountId);
-            Account destinationAccount = accountService.GetAccount(destinationBankId, destinationAccountId);
-
-            long Id;
-            do
-            {
-                Id = rand.Next();
-            }
-
-            while ((sourceAccount.Transactions.SingleOrDefault(t => t.TransactionId == Id) != null) ||
-                    (destinationAccount.Transactions.SingleOrDefault(t => t.TransactionId == Id)!=null));
-            return Id;
-        }
-        public long AddTransaction(TransactionType transactionType, long sourceBankId, long sourceAccountId,long destinationBankId, long destinationAccountId,Money<decimal> amount)
-        {
-
-            Money<decimal> deductible = GetDeductible(transactionType, sourceBankId, amount);
-
-            accountService.UpdateBalance(sourceBankId,sourceAccountId,-deductible);
-            accountService.UpdateBalance(destinationBankId, destinationAccountId,amount);
-
-            Transaction transaction = new Transaction
-            {
-                TransactionId = GenerateId(sourceBankId, sourceAccountId, destinationBankId, destinationAccountId),
-                SourceAccountId = sourceAccountId,
-                DestinationAccountId = destinationAccountId,
-                SourceBankId = sourceBankId,
-                DestinationBankId = destinationBankId,
-                Type=transactionType,
-                Amount = amount,
-                On=DateTime.Now
-            };
-            accountService.GetAccount(sourceBankId,sourceAccountId).Transactions.Add(transaction);
-            accountService.GetAccount(destinationBankId, destinationAccountId).Transactions.Add(transaction);
-
-            return transaction.TransactionId;
-        }
-        public Money<decimal> GetDeductible(TransactionType transactionType, long sourceBankId, Money<decimal> amount)
-        {
-            return new Money<decimal>(amount.Amount * (1 + 0.01m * bankService.GetTransactionChargePercentage(sourceBankId, transactionType)), amount.Currency);
+            this.appDbContext = appDbContext;
         }
 
-        public Transaction GetTransaction(long bankId, long accountId, long TransactionId)
+        public Transaction Create(Transaction transaction)
         {
-            Account account = accountService.GetAccount(bankId, accountId);
-            var transaction = account.Transactions.SingleOrDefault(t => t.TransactionId == TransactionId);
+            appDbContext.Transactions.Add(transaction);
+            appDbContext.SaveChanges();
+            return appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
+
+        }
+
+        public Transaction Delete(Guid Id)
+        {
+            Transaction transaction = appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == Id);
+            appDbContext.Transactions.Remove(transaction);
+            appDbContext.SaveChanges();
             return transaction;
         }
+
+        public IEnumerable<Transaction> GetTransactions()
+        {
+            //ISSUE THERE WILL COME BACK
+
+            return appDbContext.Transactions
+                .Include(t => t.SourceAccount)
+                .Include(t => t.DestinationAccount)
+                .Include(t => t.Money)
+                .ToList();
+        }
+
+        public Transaction GetTransactionById(Guid Id)
+        {
+            var t = appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == Id);
+            return t;
+        }
+
+        public Transaction Update(Transaction transaction)
+        {
+            appDbContext.Transactions.Attach(transaction);
+            appDbContext.SaveChanges();
+            return appDbContext.Transactions.FirstOrDefault(t => t.TransactionId == transaction.TransactionId);
+        }
+
+        public Guid GetFundsId(Guid accountId)
+        {
+            var account = appDbContext.Accounts.SingleOrDefault(a => a.AccountId == accountId);
+            return account.FundsId;
+        }
+
+        public Models.Money RegisterMoney(Models.Money money)
+        {
+            appDbContext.MoneyTable.Add(money);
+            appDbContext.SaveChanges();
+            var registeredMoney = appDbContext.MoneyTable.SingleOrDefault(m => m.Id == money.Id);
+            return registeredMoney;
+
+        }
     }
+
 }

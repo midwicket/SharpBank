@@ -1,88 +1,91 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SharpBank.Data;
+using SharpBank.Models;
+using SharpBank.Services.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Money;
-using SharpBank.Models;
-using SharpBank.Models.Enums;
-using SharpBank.Models.Exceptions;
 
 namespace SharpBank.Services
 {
-    public class AccountService
+    public class AccountService : IAccountService
     {
-        private readonly BankService bankService;
+        private readonly AppDbContext appDbContext;
 
-        public AccountService( BankService bankService)
+        public AccountService(AppDbContext appDbContext)
         {
-            this.bankService = bankService;
-            Account acc = new Account
+            this.appDbContext = appDbContext;
+        }
+        public string Authenticate(Guid accountId, string password)
+        {
+            Account account = appDbContext.Accounts.FirstOrDefault(a => a.AccountId == accountId && a.Password == password);
+            if (account == null) return null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenKey = Encoding.ASCII.GetBytes("MirchiBajjiManoharRaoKey");
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Name = "Outflow",
-                Gender = Gender.Other,
-                AccountId = 0,
-                BankId = 0,
-                Password = "".GetHashCode().ToString(),
-                Balance = new Funds { Wallets=new List<Money<decimal>>() },
-                Status = Status.Active,
-                Transactions = new List<Transaction>()
+                Subject = new ClaimsIdentity(new Claim[]{ 
+                    new Claim(ClaimTypes.Name,account.AccountId.ToString()),
+                    new Claim(ClaimTypes.Role,account.Status.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = 
+                new SigningCredentials(
+                    new SymmetricSecurityKey(tokenKey),
+                    SecurityAlgorithms.HmacSha256)
             };
-            bankService.GetBank(0).Accounts.Add(acc);
-        }
-        public string GetHashedPassword(long bankId, long accountID) {
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            Account acc = GetAccount(bankId, accountID);
-            return acc.Password;
-
-        }
-        public long AddAccount(string name, long bankId, Gender gender,string hashedPassword)
-        {
-            Account acc = new Account
-            {
-                Name = name,
-                Gender = gender,
-                AccountId = GenerateId(bankId),
-                BankId = bankId,
-                Balance = new Funds { Wallets = new List<Money<decimal>>() },
-                Status = Status.Active,
-                Password = hashedPassword,
-                Transactions = new List<Transaction>()
-            };
-            bankService.GetBank(bankId).Accounts.Add(acc);
-            return acc.AccountId;
-        }
-        public long GenerateId(long bankId)
-        {
-            Random rand = new Random(321);
-            Bank bank = bankService.GetBank(bankId);
-            long Id;
-            do
-            {
-                Id = rand.Next();
-            }
-
-            while (bank.Accounts.SingleOrDefault(a => a.AccountId == Id)!=null);
-            return Id;
+            return tokenHandler.WriteToken(token);
         }
 
-        public Account GetAccount(long bankId, long accountId)
+        public Account Create(Account account)
         {
-            return bankService.GetBank(bankId).Accounts.SingleOrDefault(a=>a.AccountId == accountId); 
-        }
-        public void UpdateBalance(long bankId,long accountId,Money<decimal> money)
-        {
-            Account acc = GetAccount(bankId, accountId);
-            acc.Balance += money;
-        }
-        public void SetPassword(long bankId, long accountId, string password) {
-            Account acc = GetAccount(bankId, accountId);
-            acc.Password = password;
-        }
-        public void RemoveAccount(long bankId, long accountId)
-        {
-            bankService.GetBank(bankId).Accounts.Remove(GetAccount(bankId, accountId));
+            appDbContext.Accounts.Add(account);
+            appDbContext.SaveChanges();
+            return account;
         }
 
+        public Funds CreateFunds(Funds funds)
+        {
+            appDbContext.FundsTable.Add(funds);
+            appDbContext.SaveChanges();
+            return appDbContext.FundsTable.SingleOrDefault(f => f.Id == funds.Id);
+        }
+
+        public Account Delete(Guid accountId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Account GetAccountById(Guid accountId)
+        {
+            var res = appDbContext.Accounts.FirstOrDefault(a => a.AccountId == accountId);
+            return res;
+        }
+
+        public IEnumerable<Account> GetAccounts()
+        {
+            return appDbContext.Accounts
+                .Include(a => a.Funds)
+                .ThenInclude(f => f.Wallets)
+                .Include(a => a.CreditTransactions)
+                .Include(a => a.DebitTransactions)
+                .ToList();
+        }
+
+        public Account Update(Account account)
+        {
+            appDbContext.Accounts.Attach(account);
+            appDbContext.SaveChanges();
+            return account;
+        }
     }
+
 }

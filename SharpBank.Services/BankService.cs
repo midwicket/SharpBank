@@ -1,72 +1,94 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using SharpBank.Data;
+using SharpBank.Models;
+using SharpBank.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpBank.Models;
-using SharpBank.Models.Enums;
-using SharpBank.Models.Exceptions;
 
 namespace SharpBank.Services
 {
-    public class BankService
+    public class BankService : IBankService
     {
-        private readonly Datastore datastore;
+        private readonly AppDbContext appDbContext;
 
-        public BankService(Datastore datastore)
+        public BankService(AppDbContext appDbContext)
         {
-            this.datastore = datastore;
-            datastore.Banks.Add(new Bank { BankId = 0, Name="Reserve Bank",Accounts = new List<Account> { } } );
+            this.appDbContext = appDbContext;
         }
-        public long GenerateId()
+        public Bank Create(Bank bank)
         {
-            Random rand = new Random(123);
-            
-            long Id;
-            do
-            {
-                Id = rand.Next();
-            }
+            appDbContext.Banks.Add(bank);
+            appDbContext.SaveChanges();
+            return bank;
+        }
 
-            while (datastore.Banks.SingleOrDefault(b => b.BankId == Id) != null);
-            return Id;
-        }
-        public long AddBank(string name)
+        public TransactionCharge CreateTransactionCharge(Bank bank,decimal rtgs, decimal imps, decimal neft, string name)
         {
-            Bank bank = new Bank
+            TransactionCharge transactionCharge = new TransactionCharge
             {
-                BankId = GenerateId(),
+                Id = Guid.NewGuid(),
                 Name = name,
-                RTGS=2m,
-                IMPS=5m,
-                NEFT=1m,
-                CreatedOn = DateTime.Now,
-                CreatedBy = "Admin",
-                UpdatedOn = DateTime.Now,
-                UpdatedBy = "Admin",
-                Accounts = new List<Account>()
-            };
-            datastore.Banks.Add(bank);
-            return bank.BankId;
-        }
-
-        public Bank GetBank(long bankId) {
-
-            return datastore.Banks.SingleOrDefault(b => b.BankId == bankId);
-        }
-        public Bank GetBankByName(string name) {
-            return datastore.Banks.FirstOrDefault(b => b.Name == name);
-        }
-        public decimal GetTransactionChargePercentage(long bankId, TransactionType transactionType) {
-            return transactionType switch
-            {
-                TransactionType.CASH => 0,
-                TransactionType.IMPS => GetBank(bankId).IMPS,
-                TransactionType.RTGS => GetBank(bankId).IMPS,
-                TransactionType.NEFT => GetBank(bankId).NEFT,
-                _ => 0
+                RTGS = rtgs,
+                NEFT = neft,
+                IMPS = imps,
+                BankId = bank.BankId
 
             };
+            appDbContext.Charges.Add(transactionCharge);
+            return transactionCharge;
+        }
+
+        public Bank Delete(Guid Id)
+        {
+            Bank bank = appDbContext.Banks.SingleOrDefault(b => (b.BankId == Id));
+            appDbContext.Banks.Remove(bank);
+            appDbContext.SaveChanges();
+            return bank;
+        }
+
+        public Bank GetBankById(Guid Id)
+        {
+            Bank bank = appDbContext.Banks.SingleOrDefault(b => (b.BankId == Id));
+            return bank;
+        }
+
+        public Bank GetBankByName(string bankName)
+        {
+            Bank bank = appDbContext.Banks.FirstOrDefault(b => (b.Name == bankName));
+            return bank;
+        }
+
+        public IEnumerable<Bank> GetBanks()
+        {
+            return appDbContext.Banks.Include(b => b.Accounts).ToList();
+        }
+
+        public TransactionCharge GetTransactionChargeByName(Guid bankId, string Name)
+        {
+            TransactionCharge transactionCharge = appDbContext.Charges.SingleOrDefault(tc => ((tc.Name==Name)&&(tc.BankId==bankId)));
+            return transactionCharge;
+        }
+
+        public Bank Update(Bank bank)
+        {
+            appDbContext.Banks.Attach(bank);
+            appDbContext.SaveChanges();
+            return bank;
+        }
+
+        public TransactionCharge UpdateTransactionCharge(Bank bank, decimal rtgs, decimal imps, decimal neft, string name)
+        {
+            TransactionCharge transactionCharge = appDbContext.Charges.SingleOrDefault(tc => ((tc.Name == name) && (tc.BankId == bank.BankId)));
+            transactionCharge.RTGS = rtgs;
+            transactionCharge.NEFT = neft;
+            transactionCharge.IMPS = imps;
+            appDbContext.Charges.Attach(transactionCharge);
+            appDbContext.SaveChanges();
+            return transactionCharge;
         }
     }
+
 }

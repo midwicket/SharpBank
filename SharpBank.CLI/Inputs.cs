@@ -124,5 +124,18 @@ namespace SharpBank.CLI
             res.Add(Convert.ToInt64(Console.ReadLine()));
             return res;
         }
+        public static SharpBank.Models.Enums.Status GetStatus()
+        {
+            SelectionPrompt<SharpBank.Models.Enums.Status> selectionPrompt = new SelectionPrompt<SharpBank.Models.Enums.Status>().Title("Select Status");
+            IEnumerable<SharpBank.Models.Enums.Status> statuses = (SharpBank.Models.Enums.Status[])Enum.GetValues(typeof(SharpBank.Models.Enums.Status));
+
+            selectionPrompt.AddChoices(statuses);
+
+            var option = AnsiConsole.Prompt(
+                selectionPrompt
+                );
+            return option;
+
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace SharpBank.Models.Enums
         Dormant,
         Closed,
         Inactive,
-        Incarcerated
+        Incarcerated,
+        Staff
     }
 }
